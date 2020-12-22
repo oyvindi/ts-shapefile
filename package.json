@@ -1,5 +1,5 @@
 {
-  "name": "shapefile",
+  "name": "ts-shapefile",
   "version": "1.0.0",
   "description": "TypeScript based shapefile reader",
   "type": "module",
