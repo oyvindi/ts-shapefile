@@ -5,25 +5,25 @@ import { DbfReader } from "./dbf/dbfReader";
 import { DbfFieldDescr } from "./dbf/dbfTypes";
 
 export class ShapeFeatureReader {
-  private _shpReader: ShapeReader = null;
-  private _dbfReader: DbfReader = null;
+  private _shpReader: ShapeReader;
+  private _dbfReader?: DbfReader;
 
   public get featureCount(): number {
-    return this._shpReader.recordCount;
+    return this._shpReader!.recordCount;
   }
 
   public get fields(): Array<DbfFieldDescr> {
-    return this._dbfReader.fields;
+    return this._dbfReader!.fields;
   }
 
   public get shpHeader(): ShpHeader {
-    return this._shpReader.shpHeader;
+    return this._shpReader!.shpHeader;
   }
 
-  private constructor(shapeFile: ShapeReader, dbfReader: DbfReader) {
-    if (shapeFile.recordCount != dbfReader.recordCount) {
+  private constructor(shapeFile: ShapeReader, dbfReader?: DbfReader) {
+    if (shapeFile.recordCount != dbfReader?.recordCount) {
       throw new Error(
-        `Record count mismatch: SHP-file has ${shapeFile.recordCount} records, DBF has ${dbfReader.recordCount}`
+        `Record count mismatch: SHP-file has ${shapeFile.recordCount} records, DBF has ${dbfReader?.recordCount}`
       );
     }
     this._shpReader = shapeFile;
@@ -43,7 +43,7 @@ export class ShapeFeatureReader {
       throw new Error("No .shx buffer provided");
     }
     let shapeReader = await ShapeReader.fromArrayBuffer(shp, shx);
-    let dbfReader: DbfReader = null;
+    let dbfReader: DbfReader | undefined;
     if (dbf != null) {
       dbfReader = await DbfReader.fromArrayBuffer(dbf, cpg);
     }
@@ -58,7 +58,7 @@ export class ShapeFeatureReader {
       throw new Error("No .shx file provided");
     }
     let shapeReader = await ShapeReader.fromFile(shp, shx);
-    let dbfReader: DbfReader = null;
+    let dbfReader: DbfReader | undefined;
     if (dbf != null) {
       dbfReader = await DbfReader.fromFile(dbf, cpg);
     }
@@ -69,8 +69,8 @@ export class ShapeFeatureReader {
     if (index < 0 || index > this.featureCount - 1) {
       throw new Error("Feature index out of range");
     }
-    const geom = this._shpReader.readGeom(index);
-    let attrs: Array<any> = null;
+    const geom = this._shpReader!.readGeom(index);
+    let attrs: Array<any> = [];
     if (this._dbfReader != null) {
       attrs = this._dbfReader.readRecord(index);
     }

@@ -50,7 +50,7 @@ export class LinerarRing extends LineString {
 }
 
 export class ShpPolygonPart {
-  readonly exteriorRing: LinerarRing = null;
+  readonly exteriorRing: LinerarRing;
   readonly interiorRings: Array<LinerarRing> = new Array<LinerarRing>();
 
   constructor(exterior: LinerarRing) {

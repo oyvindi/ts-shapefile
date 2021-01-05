@@ -3,11 +3,11 @@ import { GeoJsonFeature, GeoJsonFeatureCollection } from "./shp/geom/geoJson";
 import { ShpGeometry } from "./shp/geom/geometry";
 
 export class ShapeFeature {
-  private _fields: Array<DbfFieldDescr> = null;
+  private _fields?: Array<DbfFieldDescr>;
 
-  readonly geom: ShpGeometry = null;
+  readonly geom?: ShpGeometry;
 
-  readonly attrs: Array<any> = null;
+  readonly attrs?: Array<any>;
 
   constructor(geom: ShpGeometry, attributes?: Array<any>, fieldInfo?: Array<DbfFieldDescr>) {
     this.geom = geom;
@@ -23,7 +23,7 @@ export class ShapeFeature {
       }
     }
     return {
-      geometry: this.geom.toGeoJson(),
+      geometry: this.geom!.toGeoJson(),
       properties: props,
       type: "Feature",
     };

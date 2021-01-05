@@ -2,7 +2,7 @@
     DBF language code as provided in byte 29, cross referenced with code-page
     Source: http://shapelib.maptools.org/codepage.html
 */
-export const CpLUT = {
+export const CpLUT: { [index: number]: any } = {
   1: [437, "US MS-DOS"],
   2: [850, "International MS-DOS"],
   3: [1252, "Windows ANSI Latin I"],

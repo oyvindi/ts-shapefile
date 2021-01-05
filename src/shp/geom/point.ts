@@ -5,7 +5,7 @@ import { GeoJsonGeom } from "./geoJson";
 export type ShpPointType = ShapeType.Point | ShapeType.PointZ | ShapeType.PointM;
 
 export class ShpPoint extends ShpGeometryBase {
-  private _point: Coordinate = null;
+  private _point: Coordinate;
 
   public get x() {
     return this._point.x;

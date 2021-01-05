@@ -12,10 +12,10 @@ import { ShpPolyLine, LineString, ShpPolylineType } from "./geom/polyLine";
 const mNaN = -Math.pow(-10, 38);
 
 export class ShapeReader {
-  private _shxStream: MemoryStream = null;
-  private _shpStream: MemoryStream = null;
-  private _shxHeader: ShpHeader = null;
-  private _shpHeader: ShpHeader = null;
+  private _shxStream: MemoryStream;
+  private _shpStream: MemoryStream;
+  private _shxHeader: ShpHeader;
+  private _shpHeader: ShpHeader;
 
   readonly recordCount: number = 0;
 
@@ -24,15 +24,15 @@ export class ShapeReader {
   readonly hasM: boolean;
 
   public get extent(): BoundingBox {
-    return this._shpHeader.extent;
+    return this._shpHeader!.extent;
   }
 
   public get shapeType(): ShapeType {
-    return this._shpHeader.type;
+    return this._shpHeader!.type;
   }
 
   public get shpHeader(): ShpHeader {
-    return this._shpHeader;
+    return this._shpHeader!;
   }
 
   private constructor(shp: ArrayBuffer, shx: ArrayBuffer) {
@@ -142,8 +142,8 @@ export class ShapeReader {
 
     // Read parts / coordinates
     const xy = this._shpStream.readDoubleArray(partsInfo.numPoints * 2, true);
-    let zValues: Float64Array = null;
-    let mValues: Float64Array = null;
+    let zValues: Float64Array | undefined;
+    let mValues: Float64Array | undefined;
     if (this.hasZ) {
       const zMin = this._shpStream.readDouble(true);
       const zMax = this._shpStream.readDouble(true);
@@ -228,16 +228,12 @@ export class ShapeReader {
   private _readPoint(header: GeomHeader): ShpPoint {
     const x = this._shpStream.readDouble(true);
     const y = this._shpStream.readDouble(true);
-    let coord: Coordinate = null;
+    let coord: Coordinate | undefined;
     if (this.hasM) {
-      let z = null;
-      let m = null;
-      if (this.hasZ) {
-        z = this._shpStream.readDouble(true);
-      }
-      m = this._shpStream.readDouble(true);
+      const z = this.hasZ ? this._shpStream.readDouble(true) : undefined;
+      let m = this._shpStream.readDouble(true);
       m = this._checkMeasureNaN(m);
-      if (this.hasZ) {
+      if (z) {
         coord = new CoordXYZM(x, y, z, m);
       } else {
         coord = new CoordXYM(x, y, m);
@@ -254,8 +250,8 @@ export class ShapeReader {
 
     // Read parts / coordinates
     const xy = this._shpStream.readDoubleArray(numPoints * 2, true);
-    let zValues: Float64Array = null;
-    let mValues: Float64Array = null;
+    let zValues: Float64Array | undefined;
+    let mValues: Float64Array | undefined;
     if (this.hasZ) {
       const zMin = this._shpStream.readDouble(true);
       const zMax = this._shpStream.readDouble(true);
@@ -270,7 +266,7 @@ export class ShapeReader {
     const geom = new ShpMultiPoint(header.type as ShpMultiPointType);
     for (let i = 0; i < numPoints; i++) {
       let xyIdx = i * 2;
-      let coord: Coordinate = null;
+      let coord: Coordinate;
       if (mValues) {
         let m = this._checkMeasureNaN(mValues[i]);
         if (zValues) {

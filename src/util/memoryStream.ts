@@ -1,5 +1,5 @@
 export class MemoryStream {
-  private _dataView: DataView = null;
+  private _dataView: DataView;
   private _offset: number = 0;
   private _size: number = 0;
 

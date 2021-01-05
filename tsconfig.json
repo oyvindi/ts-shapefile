@@ -1,17 +1,30 @@
 {
     "compilerOptions": {
-        "module": "es2015",
+        "allowSyntheticDefaultImports": true,
+        "noFallthroughCasesInSwitch": true,
+        "declaration": true,
+        "declarationDir": "./dist/types",
+        "module": "esnext",
+        "allowJs": true,
+        "forceConsistentCasingInFileNames": true,
+        "isolatedModules": true,
         "esModuleInterop": true,
-        "target": "es5",
-        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "noEmit": true,
+        "outDir": "./dist",
+        "jsx": "react",
+        "target": "ES2016",
         "sourceMap": true,
-        "outDir": "dist",
+        "moduleResolution": "node",
         "lib": [
-            "es2015",
-            "DOM"
+            "DOM",
+            "ES6",
+            "DOM.Iterable",
+            "ScriptHost"
         ],
-        "mapRoot": "http://localhost:1234/src",
-        "declaration": true
+        "resolveJsonModule": true,
+        "strict": true
     },
     "include": [
         "src/**/*.ts"
@@ -20,5 +33,5 @@
         "./tests/",
         "./node_modules/",
         "./dist/"
-    ],    
+    ],
 }

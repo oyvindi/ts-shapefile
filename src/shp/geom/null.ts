@@ -3,6 +3,6 @@ import { GeoJsonGeom } from "./geoJson";
 
 export class ShpNullGeom extends ShpGeometryBase {
   public toGeoJson(): GeoJsonGeom {
-    return null;
+    throw new Error("Not implemented");
   }
 }

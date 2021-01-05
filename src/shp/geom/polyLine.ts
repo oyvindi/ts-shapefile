@@ -17,7 +17,7 @@ export class LineString {
 export type ShpPolylineType = ShapeType.PolyLine | ShapeType.PolyLineZ | ShapeType.PolyLineM;
 
 export class ShpPolyLine extends ShpGeometryBase {
-  readonly parts: Array<LineString> = null;
+  readonly parts: Array<LineString>;
 
   constructor(type: ShpPolylineType, parts: Array<LineString>) {
     super(type);
@@ -26,7 +26,7 @@ export class ShpPolyLine extends ShpGeometryBase {
 
   public toGeoJson(): GeoJsonGeom {
     let geomType: GeoJsonType = this.parts.length > 1 ? "MultiLineString" : "LineString";
-    let coords = [];
+    let coords: Array<any> = [];
     if (this.parts.length == 1) {
       coords = this.parts[0].toGeoJson();
     } else if (this.parts.length > 1) {

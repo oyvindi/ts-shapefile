@@ -1,7 +1,7 @@
 import { MemoryStream } from "../util/memoryStream";
 import { DbfFieldDescr, DbfFieldType, DbfHeader } from "./dbfTypes";
 import { DbfDecoder, DbfDecoderFactory } from "./dbfDecoderFactory";
-import { Buffer } from "buffer-shims";
+require("buffer");
 
 const FieldTypeNames: any = {
   C: "Character",
@@ -13,12 +13,12 @@ const FieldTypeNames: any = {
 
 export class DbfReader {
   private static _regExDate = /^(\d\d\d\d)(\d\d)(\d\d)$/;
-  private _stream: MemoryStream = null;
-  private _header: DbfHeader = null;
+  private _stream: MemoryStream;
+  private _header: DbfHeader;
   private _fields: Array<DbfFieldDescr> = new Array<DbfFieldDescr>();
   private _recordStartOffset: number = 0;
   private _recordSize: number = 0;
-  private _decoder: DbfDecoder;
+  private _decoder?: DbfDecoder;
 
   public get fields(): Array<DbfFieldDescr> {
     return this._fields;
@@ -44,7 +44,7 @@ export class DbfReader {
     }
     try {
       const buffer = await file.arrayBuffer();
-      let cpgBuf: ArrayBuffer = null;
+      let cpgBuf: ArrayBuffer | undefined;
       if (cpgFile) {
         cpgBuf = await cpgFile.arrayBuffer();
       }
@@ -56,7 +56,7 @@ export class DbfReader {
 
   public static async fromArrayBuffer(buffer: ArrayBuffer, cpgBuf?: ArrayBuffer): Promise<DbfReader> {
     try {
-      let decoder: DbfDecoder = null;
+      let decoder: DbfDecoder | undefined;
       if (cpgBuf) {
         const cpgDecoder = new TextDecoder();
         const cpgStr = await cpgDecoder.decode(cpgBuf);
@@ -134,7 +134,7 @@ export class DbfReader {
     let offset = this._recordStartOffset + index * this._recordSize;
     this._stream.seek(offset);
     const deletedFlag = this._stream.readByte();
-    let result = [];
+    let result: Array<any> = [];
     if (deletedFlag == 0x2a) {
       // Deleted record, fill with null
       this._fields.forEach(() => result.push(null));
@@ -177,7 +177,7 @@ export class DbfReader {
       }
       chars[i] = charCode;
     }
-    let value = this._decoder.decode(chars);
+    let value = this._decoder!.decode(chars);
     return value.trim();
   }
 
@@ -189,7 +189,7 @@ export class DbfReader {
     return parseFloat(val);
   }
 
-  private _readDateValue(field: DbfFieldDescr): Date {
+  private _readDateValue(field: DbfFieldDescr): Date | null {
     const strVal = this._readCharValue(field);
     const m = strVal.match(DbfReader._regExDate);
     if (m == null) {
@@ -198,7 +198,7 @@ export class DbfReader {
     return new Date(+m[1], +m[2], +m[3]);
   }
 
-  private _readLogicalValue(field: DbfFieldDescr): boolean {
+  private _readLogicalValue(field: DbfFieldDescr): boolean | null {
     const charCode = this._stream.readByte();
     switch (String.fromCharCode(charCode)) {
       case "y":
