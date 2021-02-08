@@ -1,7 +1,7 @@
 import { MemoryStream } from "../util/memoryStream";
 import { DbfFieldDescr, DbfFieldType, DbfHeader } from "./dbfTypes";
 import { DbfDecoder, DbfDecoderFactory } from "./dbfDecoderFactory";
-require("buffer");
+import "buffer";
 
 const FieldTypeNames: any = {
   C: "Character",

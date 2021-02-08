@@ -1,6 +1,6 @@
 import { CpLUT } from "./codePageLUT";
 import { encodingExists, decode } from "iconv-lite";
-require("buffer");
+import "buffer";
 
 // ESRI article on encoding: https://support.esri.com/en/technical-article/000013192
 // "If a dBASE file lacks an LDID or a .CPG file, it assumes the file is encoded in the Windows (ANSI/Multi-byte) code page."
