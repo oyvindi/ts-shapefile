@@ -16,22 +16,23 @@
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
-    "rollup-plugin-node-polyfills": "^0.2.1",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",
     "buffer": "^6.0.3",
     "chai": "^4.2.0",
+    "cross-env": "^7.0.3",
     "geojsonhint": "^2.0.0",
     "mocha": "^8.2.1",
     "rollup": "^2.34.2",
     "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "rollup-plugin-typescript2": "^0.29.0",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.2"
   },
   "scripts": {
     "build": "rollup --config",
-    "test": "env TS_NODE_PROJECT=\"tsconfig.tests.json\"  mocha"
+    "test": "cross-env TS_NODE_PROJECT=\"tsconfig.tests.json\"  mocha"
   },
   "dependencies": {
     "iconv-lite": "^0.6.2"
