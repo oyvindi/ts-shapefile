@@ -2,18 +2,21 @@
   "name": "ts-shapefile",
   "version": "1.0.1",
   "description": "TypeScript based shapefile reader",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/ts-shape.cjs.js",
+  "module": "dist/ts-shape.esm.js",
+  "types": "dist/types/index.d.ts",
   "author": "Oyvind Idland",
   "license": "MIT",
   "publishConfig": {
-    "browser": "dist/ts-shape.browser.js"
+    "browser": "dist/ts-shape.browser.js",
+    "main": "dist/ts-shape.cjs.js",
+    "module": "dist/ts-shape.esm.js"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",
     "buffer": "^6.0.3",
