@@ -1,4 +1,4 @@
-export type GeoJsonType = "Point" | "LineString" | "Polygon" | "MultiPoint" | "MultiLineString" | "MultiPolygon";
+export type GeoJsonType = 'Point' | 'LineString' | 'Polygon' | 'MultiPoint' | 'MultiLineString' | 'MultiPolygon';
 
 export interface GeoJsonObject {
   readonly type: string;
@@ -15,12 +15,12 @@ export interface GeoJsonGeom extends GeoJsonObject {
 }
 
 export interface GeoJsonFeature extends GeoJsonObject {
-  readonly type: "Feature";
+  readonly type: 'Feature';
   geometry: GeoJsonGeom;
   properties: Object;
 }
 
 export interface GeoJsonFeatureCollection extends GeoJsonObject {
-  readonly type: "FeatureCollection";
+  readonly type: 'FeatureCollection';
   features: Array<GeoJsonFeature>;
 }

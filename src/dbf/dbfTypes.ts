@@ -1,4 +1,4 @@
-export type DbfFieldType = "B" | "C" | "D" | "N" | "L" | "M" | "@" | "I" | "F" | "0" | "G";
+export type DbfFieldType = 'B' | 'C' | 'D' | 'N' | 'L' | 'M' | '@' | 'I' | 'F' | '0' | 'G';
 
 export interface DbfHeader {
   readonly version: number;

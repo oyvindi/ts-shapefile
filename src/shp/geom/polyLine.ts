@@ -1,9 +1,9 @@
-import { Coordinate } from "./coordinate";
-import { ShpGeometryBase, ShapeType } from "./geometry";
-import { GeoJsonType, GeoJsonGeom, GeoJsonCoordinateSequence } from "./geoJson";
+import { Coordinate } from './coordinate';
+import { ShpGeometryBase, ShapeType } from './geometry';
+import { GeoJsonType, GeoJsonGeom, GeoJsonCoordinateSequence } from './geoJson';
 
 export class LineString {
-  readonly coords: Array<Coordinate> = new Array<Coordinate>();
+  readonly coords: Array<Coordinate> = [];
 
   public toJson(): Coordinate[] {
     return this.coords.map((coord) => coord.toJson());
@@ -25,16 +25,16 @@ export class ShpPolyLine extends ShpGeometryBase {
   }
 
   public toGeoJson(): GeoJsonGeom {
-    let geomType: GeoJsonType = this.parts.length > 1 ? "MultiLineString" : "LineString";
+    const geomType: GeoJsonType = this.parts.length > 1 ? 'MultiLineString' : 'LineString';
     let coords: Array<any> = [];
-    if (this.parts.length == 1) {
+    if (this.parts.length === 1) {
       coords = this.parts[0].toGeoJson();
     } else if (this.parts.length > 1) {
       this.parts.forEach((lineString) => coords.push(lineString.toGeoJson()));
     }
     return {
       type: geomType,
-      coordinates: coords,
+      coordinates: coords
     };
   }
 }

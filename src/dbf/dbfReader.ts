@@ -1,21 +1,21 @@
-import { MemoryStream } from "../util/memoryStream";
-import { DbfFieldDescr, DbfFieldType, DbfHeader } from "./dbfTypes";
-import { DbfDecoder, DbfDecoderFactory } from "./dbfDecoderFactory";
-import "buffer";
+import { MemoryStream } from '../util/memoryStream';
+import { DbfFieldDescr, DbfFieldType, DbfHeader } from './dbfTypes';
+import { DbfDecoder, DbfDecoderFactory } from './dbfDecoderFactory';
+import 'buffer';
 
 const FieldTypeNames: any = {
-  C: "Character",
-  N: "Number",
-  L: "Logical",
-  F: "Float",
-  D: "Date",
+  C: 'Character',
+  N: 'Number',
+  L: 'Logical',
+  F: 'Float',
+  D: 'Date'
 };
 
 export class DbfReader {
   private static _regExDate = /^(\d\d\d\d)(\d\d)(\d\d)$/;
   private _stream: MemoryStream;
   private _header: DbfHeader;
-  private _fields: Array<DbfFieldDescr> = new Array<DbfFieldDescr>();
+  private _fields: Array<DbfFieldDescr> = [];
   private _recordStartOffset: number = 0;
   private _recordSize: number = 0;
   private _decoder?: DbfDecoder;
@@ -29,7 +29,7 @@ export class DbfReader {
   }
 
   public get encoding(): string {
-    return this._decoder?.encoding ?? "";
+    return this._decoder?.encoding ?? '';
   }
 
   private constructor(dbf: ArrayBuffer, decoder?: DbfDecoder) {
@@ -40,7 +40,7 @@ export class DbfReader {
 
   public static async fromFile(file: File, cpgFile?: File): Promise<DbfReader> {
     if (file == null) {
-      throw new Error("No .dbf file provided");
+      throw new Error('No .dbf file provided');
     }
     try {
       const buffer = await file.arrayBuffer();
@@ -76,8 +76,8 @@ export class DbfReader {
     const updatedM = s.readByte();
     const updatedD = s.readByte();
     const recordCount = s.readInt32(true);
-    const headerSize = s.readInt16(true);
-    const recordSize = s.readInt16(true); // can't be trusted, may be 0 for some reason
+    s.readInt16(true); // skip headerSize
+    s.readInt16(true); // skip recordSize ( can't be trusted, may be 0 for some reason)
     const lang = s.seek(29).readByte();
     /* Create a decoder if not provided in constructor */
     if (!this._decoder) {
@@ -89,13 +89,13 @@ export class DbfReader {
     while (true) {
       s.seek(recordIdx);
       const firstByte = s.peekByte();
-      if (firstByte == 0x0d) {
+      if (firstByte === 0x0d) {
         break;
       }
-      let fieldName = "";
+      let fieldName = '';
       for (let i = 0; i < 10; i++) {
-        let charCode = s.readByte();
-        if (charCode == 0) {
+        const charCode = s.readByte();
+        if (charCode === 0) {
           break;
         }
         fieldName += String.fromCharCode(charCode);
@@ -108,12 +108,12 @@ export class DbfReader {
       const fieldLen = s.readByte();
       const decimals = s.readByte();
 
-      let field: DbfFieldDescr = {
+      const field: DbfFieldDescr = {
         name: fieldName,
         type: fieldType,
-        typeName: FieldTypeNames[fieldType] || "Unknown",
+        typeName: FieldTypeNames[fieldType] || 'Unknown',
         fieldLen: fieldLen,
-        decimalCount: decimals,
+        decimalCount: decimals
       };
       this._fields.push(field);
       recordIdx += 32;
@@ -126,7 +126,7 @@ export class DbfReader {
     return {
       lastUpdated: new Date(updatedY + 1900, updatedM, updatedD),
       recordCount: recordCount,
-      version: version,
+      version: version
     };
   }
 
@@ -134,8 +134,8 @@ export class DbfReader {
     let offset = this._recordStartOffset + index * this._recordSize;
     this._stream.seek(offset);
     const deletedFlag = this._stream.readByte();
-    let result: Array<any> = [];
-    if (deletedFlag == 0x2a) {
+    const result: Array<any> = [];
+    if (deletedFlag === 0x2a) {
       // Deleted record, fill with null
       this._fields.forEach(() => result.push(null));
       return result;
@@ -143,21 +143,20 @@ export class DbfReader {
     offset += 1; // deleted flag
     this._fields.forEach((field) => {
       this._stream.seek(offset);
-      let value: any = null;
       switch (field.type) {
-        case "C":
+        case 'C':
           result.push(this._readCharValue(field));
           break;
-        case "N":
+        case 'N':
           result.push(this._readNumberValue(field));
           break;
-        case "F":
+        case 'F':
           result.push(this._readNumberValue(field));
           break;
-        case "D":
+        case 'D':
           result.push(this._readDateValue(field));
           break;
-        case "L":
+        case 'L':
           result.push(this._readLogicalValue(field));
           break;
         default:
@@ -169,21 +168,21 @@ export class DbfReader {
   }
 
   private _readCharValue(field: DbfFieldDescr): string {
-    let chars: Uint8Array = new Uint8Array(field.fieldLen);
+    const chars: Uint8Array = new Uint8Array(field.fieldLen);
     for (let i = 0; i < field.fieldLen; i++) {
       const charCode = this._stream.readByte();
-      if (charCode == 0) {
+      if (charCode === 0) {
         break;
       }
       chars[i] = charCode;
     }
-    let value = this._decoder!.decode(chars);
+    const value = this._decoder!.decode(chars);
     return value.trim();
   }
 
   private _readNumberValue(field: DbfFieldDescr): number {
     const val = this._readCharValue(field);
-    if (field.decimalCount == 0) {
+    if (field.decimalCount === 0) {
       return parseInt(val);
     }
     return parseFloat(val);
@@ -201,11 +200,11 @@ export class DbfReader {
   private _readLogicalValue(field: DbfFieldDescr): boolean | null {
     const charCode = this._stream.readByte();
     switch (String.fromCharCode(charCode)) {
-      case "y":
-      case "Y":
+      case 'y':
+      case 'Y':
         return true;
-      case "n":
-      case "N":
+      case 'n':
+      case 'N':
         return false;
     }
     return null;
