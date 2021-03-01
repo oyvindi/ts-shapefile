@@ -1,6 +1,6 @@
 import { Coordinate } from "./coordinate";
 import { ShapeType, ShpGeometryBase } from "./geometry";
-import { GeoJsonType, GeoJsonGeom } from "./geoJson";
+import { GeoJsonType, GeoJsonGeom, GeoJsonCoordinateSequence } from "./geoJson";
 import { LineString } from "./polyLine";
 
 export class LinerarRing extends LineString {
@@ -42,7 +42,7 @@ export class LinerarRing extends LineString {
     return false;
   }
 
-  public toGeoJson(): Coordinate[] {
+  public toGeoJson(): GeoJsonCoordinateSequence {
     let json = this.coords.map((coord) => coord.toGeoJson());
     json.reverse();
     return json;
@@ -57,13 +57,25 @@ export class ShpPolygonPart {
     this.exteriorRing = exterior;
   }
 
-  public toJson(): any[] {
-    let res = [];
+  // Converts the part to a GeoJSON ring collection
+  public toJson(): Array<GeoJsonCoordinateSequence> {
+    const res = [];
     // GeoJSON follows the "right hand rule", where exterior rings are
     // counter-clockwise, and interiors clockwise. Therefore we reverse() them.
     res.push(this.exteriorRing.toGeoJson());
     this.interiorRings.forEach((ring) => res.push(ring.toGeoJson()));
     return res;
+  }
+
+  // Converts the part to a standalone GeoJSON polygon
+  public toGeoJson(): GeoJsonGeom {
+    const rings = new Array<GeoJsonCoordinateSequence>();
+    rings.push(this.exteriorRing.toGeoJson());
+    rings.concat(this.interiorRings.map((r)=> r.toGeoJson()));
+    return {
+      type : "Polygon",
+      coordinates : rings
+    }
   }
 }
 
@@ -77,12 +89,12 @@ export class ShpPolygon extends ShpGeometryBase {
   }
 
   public toGeoJson(): GeoJsonGeom {
-    let coords = [];
+    let coords = new Array<GeoJsonCoordinateSequence>();
     let geomType: GeoJsonType;
 
     if (this.parts.length > 1) {
       geomType = "MultiPolygon";
-      this.parts.forEach((part) => coords.push(part.toJson()));
+      this.parts.forEach((part) => coords.concat(part.toJson()));
     } else {
       geomType = "Polygon";
       coords = this.parts[0].toJson();

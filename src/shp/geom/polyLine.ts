@@ -1,6 +1,6 @@
 import { Coordinate } from "./coordinate";
 import { ShpGeometryBase, ShapeType } from "./geometry";
-import { GeoJsonType, GeoJsonGeom } from "./geoJson";
+import { GeoJsonType, GeoJsonGeom, GeoJsonCoordinateSequence } from "./geoJson";
 
 export class LineString {
   readonly coords: Array<Coordinate> = new Array<Coordinate>();
@@ -9,7 +9,7 @@ export class LineString {
     return this.coords.map((coord) => coord.toJson());
   }
 
-  public toGeoJson(): Coordinate[] {
+  public toGeoJson(): GeoJsonCoordinateSequence {
     return this.coords.map((coord) => coord.toGeoJson());
   }
 }

@@ -1,3 +1,5 @@
+import { GeoJsonCoordXY, GeoJsonCoordXYZ } from "./geoJson";
+
 export enum CoordType {
   NULL = 0,
   XY = 2,
@@ -35,11 +37,11 @@ abstract class CoordinateBase implements Coordinate {
     return [this.x, this.y];
   }
 
-  public toGeoJson(): any {
+  public toGeoJson(): GeoJsonCoordXY | GeoJsonCoordXYZ {
     if (this.hasZ) {
-      return [this.x, this.y, this.z];
+      return [this.x, this.y, this.z] as GeoJsonCoordXYZ;
     }
-    return [this.x, this.y];
+    return [this.x, this.y] as GeoJsonCoordXY;
   }
 }
 

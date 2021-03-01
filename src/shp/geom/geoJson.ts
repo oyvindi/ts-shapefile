@@ -4,9 +4,14 @@ export interface GeoJsonObject {
   readonly type: string;
 }
 
+export type GeoJsonCoordXY = [number, number];
+export type GeoJsonCoordXYZ = [number, number, number];
+
+export type GeoJsonCoordinateSequence = Array<GeoJsonCoordXY | GeoJsonCoordXYZ>;
+
 export interface GeoJsonGeom extends GeoJsonObject {
   type: GeoJsonType;
-  coordinates: any[];
+  coordinates: Array<GeoJsonCoordinateSequence>;
 }
 
 export interface GeoJsonFeature extends GeoJsonObject {
