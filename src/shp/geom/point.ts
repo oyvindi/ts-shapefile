@@ -1,6 +1,6 @@
-import { Coordinate } from "./coordinate";
-import { ShapeType, ShpGeometryBase } from "./geometry";
-import { GeoJsonGeom } from "./geoJson";
+import { Coordinate } from './coordinate';
+import { ShapeType, ShpGeometryBase } from './geometry';
+import { GeoJsonGeom } from './geoJson';
 
 export type ShpPointType = ShapeType.Point | ShapeType.PointZ | ShapeType.PointM;
 
@@ -30,8 +30,8 @@ export class ShpPoint extends ShpGeometryBase {
 
   public toGeoJson(): GeoJsonGeom {
     return {
-      type: "Point",
-      coordinates: this._point.toGeoJson(),
+      type: 'Point',
+      coordinates: this._point.toGeoJson()
     };
   }
 }

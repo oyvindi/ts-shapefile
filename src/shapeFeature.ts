@@ -1,6 +1,6 @@
-import { DbfFieldDescr } from "./dbf/dbfTypes";
-import { GeoJsonFeature, GeoJsonFeatureCollection } from "./shp/geom/geoJson";
-import { ShpGeometry } from "./shp/geom/geometry";
+import { DbfFieldDescr } from './dbf/dbfTypes';
+import { GeoJsonFeature, GeoJsonFeatureCollection } from './shp/geom/geoJson';
+import { ShpGeometry } from './shp/geom/geometry';
 
 export class ShapeFeature {
   private _fields?: Array<DbfFieldDescr>;
@@ -16,7 +16,7 @@ export class ShapeFeature {
   }
 
   public toGeoJson(): GeoJsonFeature {
-    let props: any = {};
+    const props: any = {};
     if (this.attrs && this._fields) {
       for (let i = 0; i < this._fields.length; i++) {
         props[this._fields[i].name] = this.attrs[i];
@@ -25,14 +25,14 @@ export class ShapeFeature {
     return {
       geometry: this.geom!.toGeoJson(),
       properties: props,
-      type: "Feature",
+      type: 'Feature'
     };
   }
 }
 
 export class ShapeFeatureCollection {
   private _fields: Array<DbfFieldDescr>;
-  private _features: Array<ShapeFeature> = new Array<ShapeFeature>();
+  private _features: Array<ShapeFeature> = [];
 
   public get fields(): Array<DbfFieldDescr> {
     return this._fields;
@@ -44,16 +44,16 @@ export class ShapeFeatureCollection {
 
   constructor(fields?: Array<DbfFieldDescr>) {
     if (!fields) {
-      fields = new Array<DbfFieldDescr>();
+      fields = [];
     }
     this._fields = fields;
   }
 
   public toGeoJson(): GeoJsonFeatureCollection {
-    let features = this._features.map((feature) => feature.toGeoJson());
+    const features = this._features.map((feature) => feature.toGeoJson());
     return {
-      type: "FeatureCollection",
-      features: features,
+      type: 'FeatureCollection',
+      features: features
     };
   }
 }

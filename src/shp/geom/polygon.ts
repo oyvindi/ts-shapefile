@@ -1,7 +1,7 @@
-import { Coordinate } from "./coordinate";
-import { ShapeType, ShpGeometryBase } from "./geometry";
-import { GeoJsonType, GeoJsonGeom, GeoJsonCoordinateSequence } from "./geoJson";
-import { LineString } from "./polyLine";
+import { Coordinate } from './coordinate';
+import { ShapeType, ShpGeometryBase } from './geometry';
+import { GeoJsonType, GeoJsonGeom, GeoJsonCoordinateSequence } from './geoJson';
+import { LineString } from './polyLine';
 
 export class LinerarRing extends LineString {
   public area(): number {
@@ -24,7 +24,7 @@ export class LinerarRing extends LineString {
     const coords = this.coords;
     for (let i = 0, j = coords.length - 1; i < coords.length; j = i++) {
       if (
-        coords[i].y > point.y != coords[j].y > point.y &&
+        (coords[i].y > point.y) !== (coords[j].y > point.y) &&
         point.x < ((coords[j].x - coords[i].x) * (point.y - coords[i].y)) / (coords[j].y - coords[i].y) + coords[i].x
       ) {
         inside = !inside;
@@ -43,7 +43,7 @@ export class LinerarRing extends LineString {
   }
 
   public toGeoJson(): GeoJsonCoordinateSequence {
-    let json = this.coords.map((coord) => coord.toGeoJson());
+    const json = this.coords.map((coord) => coord.toGeoJson());
     json.reverse();
     return json;
   }
@@ -51,7 +51,7 @@ export class LinerarRing extends LineString {
 
 export class ShpPolygonPart {
   readonly exteriorRing: LinerarRing;
-  readonly interiorRings: Array<LinerarRing> = new Array<LinerarRing>();
+  readonly interiorRings: Array<LinerarRing> = [];
 
   constructor(exterior: LinerarRing) {
     this.exteriorRing = exterior;
@@ -69,39 +69,35 @@ export class ShpPolygonPart {
 
   // Converts the part to a standalone GeoJSON polygon
   public toGeoJson(): GeoJsonGeom {
-    const rings = new Array<GeoJsonCoordinateSequence>();
+    const rings: Array<GeoJsonCoordinateSequence> = [];
     rings.push(this.exteriorRing.toGeoJson());
-    rings.concat(this.interiorRings.map((r)=> r.toGeoJson()));
+    rings.concat(this.interiorRings.map((r) => r.toGeoJson()));
     return {
-      type : "Polygon",
-      coordinates : rings
-    }
+      type: 'Polygon',
+      coordinates: rings
+    };
   }
 }
 
 export type ShpPolygonType = ShapeType.Polygon | ShapeType.PolygonZ | ShapeType.PolygonM;
 
 export class ShpPolygon extends ShpGeometryBase {
-  readonly parts: Array<ShpPolygonPart> = new Array<ShpPolygonPart>();
-
-  constructor(type: ShpPolygonType) {
-    super(type);
-  }
+  readonly parts: Array<ShpPolygonPart> = [];
 
   public toGeoJson(): GeoJsonGeom {
-    let coords = new Array<GeoJsonCoordinateSequence>();
+    let coords: Array<GeoJsonCoordinateSequence> = [];
     let geomType: GeoJsonType;
 
     if (this.parts.length > 1) {
-      geomType = "MultiPolygon";
+      geomType = 'MultiPolygon';
       this.parts.forEach((part) => coords.concat(part.toJson()));
     } else {
-      geomType = "Polygon";
+      geomType = 'Polygon';
       coords = this.parts[0].toJson();
     }
     return {
       type: geomType,
-      coordinates: coords,
+      coordinates: coords
     };
   }
 }

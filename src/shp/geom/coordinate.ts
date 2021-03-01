@@ -1,11 +1,13 @@
-import { GeoJsonCoordXY, GeoJsonCoordXYZ } from "./geoJson";
+import { GeoJsonCoordXY, GeoJsonCoordXYZ } from './geoJson';
 
+/* eslint-disable  no-unused-vars */
 export enum CoordType {
   NULL = 0,
   XY = 2,
   XYM = 3,
   XYZM = 4,
 }
+/* eslint-enable  no-unused-vars */
 
 export interface Coordinate {
   readonly x: number;

@@ -1,4 +1,4 @@
-import { ShapeType } from "./geom/geometry";
+import { ShapeType } from './geom/geometry';
 
 export interface BoundingBox {
   readonly xMin: number;

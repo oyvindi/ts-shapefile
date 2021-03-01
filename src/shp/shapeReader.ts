@@ -1,12 +1,12 @@
-import { Coordinate, CoordXY, CoordXYM, CoordXYZM, CoordType } from "./geom/coordinate";
-import { ShpPointType, ShpPoint } from "./geom/point";
-import { ShpMultiPointType, ShpMultiPoint } from "./geom/multiPoint";
-import { LinerarRing, ShpPolygonType, ShpPolygon, ShpPolygonPart } from "./geom/polygon";
-import { ShpNullGeom } from "./geom/null";
-import { GeomUtil, ShapeType, ShpGeometry } from "./geom/geometry";
-import { BoundingBox, GeomHeader, PartsInfo, ShpHeader } from "./shapeTypes";
-import { MemoryStream } from "../util/memoryStream";
-import { ShpPolyLine, LineString, ShpPolylineType } from "./geom/polyLine";
+import { Coordinate, CoordXY, CoordXYM, CoordXYZM } from './geom/coordinate';
+import { ShpPointType, ShpPoint } from './geom/point';
+import { ShpMultiPointType, ShpMultiPoint } from './geom/multiPoint';
+import { LinerarRing, ShpPolygonType, ShpPolygon, ShpPolygonPart } from './geom/polygon';
+import { ShpNullGeom } from './geom/null';
+import { GeomUtil, ShapeType, ShpGeometry } from './geom/geometry';
+import { BoundingBox, GeomHeader, PartsInfo, ShpHeader } from './shapeTypes';
+import { MemoryStream } from '../util/memoryStream';
+import { ShpPolyLine, LineString, ShpPolylineType } from './geom/polyLine';
 
 // According to Shape spec, M values less than this is NaN
 const mNaN = -Math.pow(-10, 38);
@@ -40,8 +40,8 @@ export class ShapeReader {
     this._shpHeader = this._readHeader(this._shpStream);
     this._shxStream = new MemoryStream(shx);
     this._shxHeader = this._readHeader(this._shxStream);
-    if (this._shpHeader.type != this._shxHeader.type) {
-      throw new Error("SHP / SHX shapetype mismatch");
+    if (this._shpHeader.type !== this._shxHeader.type) {
+      throw new Error('SHP / SHX shapetype mismatch');
     }
     this.recordCount = (this._shxHeader.fileLength - 100) / 8;
     this.hasZ = GeomUtil.hasZ(this._shpHeader.type);
@@ -50,10 +50,10 @@ export class ShapeReader {
 
   public static async fromFile(shp: File, shx: File): Promise<ShapeReader> {
     if (shp == null) {
-      throw new Error("No .shp file provided");
+      throw new Error('No .shp file provided');
     }
     if (shx == null) {
-      throw new Error("No .shx file provided");
+      throw new Error('No .shx file provided');
     }
     let shpBytes: ArrayBuffer;
     let shxBytes: ArrayBuffer;
@@ -77,8 +77,8 @@ export class ShapeReader {
   /* Used for both .shp and .shx */
   private _readHeader(stream: MemoryStream): ShpHeader {
     const version = stream.seek(0).readInt32();
-    if (version != 9994) {
-      throw new Error("Unexpected Shape version");
+    if (version !== 9994) {
+      throw new Error('Unexpected Shape version');
     }
 
     const fileLen = stream.seek(24).readInt32();
@@ -88,7 +88,7 @@ export class ShapeReader {
     const result = {
       type: shpType as ShapeType,
       fileLength: fileLen * 2,
-      extent: extent,
+      extent: extent
     };
     return result;
   }
@@ -100,7 +100,7 @@ export class ShapeReader {
     return {
       length: len,
       recordNum: recNum,
-      type: type,
+      type: type
     };
   }
 
@@ -113,7 +113,7 @@ export class ShapeReader {
       xMin: xMin,
       yMin: yMin,
       xMax: xMax,
-      yMax: yMax,
+      yMax: yMax
     };
   }
 
@@ -124,7 +124,7 @@ export class ShapeReader {
     return {
       numParts: numParts,
       numPoints: numPoints,
-      index: partIndices,
+      index: partIndices
     };
   }
 
@@ -137,7 +137,7 @@ export class ShapeReader {
 
   private _readParts<TPart extends LineString>(alloc: () => TPart): Array<TPart> {
     // Read bounding box + parts indices
-    const bbox = this._readBbox(this._shpStream);
+    this._readBbox(this._shpStream); // skip
     const partsInfo = this._readPartsInfo();
 
     // Read parts / coordinates
@@ -145,27 +145,27 @@ export class ShapeReader {
     let zValues: Float64Array | undefined;
     let mValues: Float64Array | undefined;
     if (this.hasZ) {
-      const zMin = this._shpStream.readDouble(true);
-      const zMax = this._shpStream.readDouble(true);
+      this._shpStream.readDouble(true); // skip zMin
+      this._shpStream.readDouble(true); // skip zMax
       zValues = this._shpStream.readDoubleArray(partsInfo.numPoints, true);
     }
     if (this.hasM) {
-      const mMin = this._shpStream.readDouble(true);
-      const mMax = this._shpStream.readDouble(true);
+      this._shpStream.readDouble(true); // skip mMin
+      this._shpStream.readDouble(true); // skip mMax
       mValues = this._shpStream.readDoubleArray(partsInfo.numPoints, true);
     }
 
-    const parts = new Array<TPart>();
+    const parts: Array<TPart> = [];
     for (let partNum = 0; partNum < partsInfo.numParts; partNum++) {
       const startIdx = partsInfo.index[partNum];
-      const isLast = partNum == partsInfo.numParts - 1;
+      const isLast = partNum === partsInfo.numParts - 1;
       const endIdx = isLast ? partsInfo.numPoints : partsInfo.index[partNum + 1];
-      let part = alloc();
+      const part = alloc();
       parts.push(part);
       for (let idx = startIdx; idx < endIdx; idx++) {
-        let xyIdx = idx * 2;
+        const xyIdx = idx * 2;
         if (mValues) {
-          let mVal = this._checkMeasureNaN(mValues[idx]);
+          const mVal = this._checkMeasureNaN(mValues[idx]);
           if (zValues) {
             part.coords.push(new CoordXYZM(xy[xyIdx], xy[xyIdx + 1], zValues[idx], mVal));
           } else {
@@ -182,7 +182,7 @@ export class ShapeReader {
   private _getShpIndex(index: number): number {
     const offs = index * 8 + 100;
     const shpOffset = this._shxStream.seek(offs).readInt32(false) * 2;
-    //const contentLen = this._shxStream.readInt32(false) * 2;
+    // const contentLen = this._shxStream.readInt32(false) * 2;
     return shpOffset;
   }
 
@@ -191,13 +191,12 @@ export class ShapeReader {
     this._shpStream.seek(offset);
     const recHead = this._readGeomHeader();
 
-    if (this._shpHeader.type != recHead.type) {
-      if (recHead.type == ShapeType.Null) {
+    if (this._shpHeader.type !== recHead.type) {
+      if (recHead.type === ShapeType.Null) {
         return new ShpNullGeom(recHead.type);
       }
       throw new Error(
-        `Unexpected shape type ${GeomUtil.shapeTypeStr(recHead.type)}(${
-          recHead.type as number
+        `Unexpected shape type ${GeomUtil.shapeTypeStr(recHead.type)}(${recHead.type as number
         }), expected ${GeomUtil.shapeTypeStr(this._shpHeader.type)}`
       );
     }
@@ -222,7 +221,7 @@ export class ShapeReader {
       case ShapeType.PolygonM:
         return this._readPolygon(recHead);
     }
-    throw new Error("Unsupported geometry");
+    throw new Error('Unsupported geometry');
   }
 
   private _readPoint(header: GeomHeader): ShpPoint {
@@ -246,29 +245,29 @@ export class ShapeReader {
 
   private _readMultiPoint(header: GeomHeader): ShpGeometry {
     this._readBbox(this._shpStream);
-    let numPoints = this._shpStream.readInt32(true);
+    const numPoints = this._shpStream.readInt32(true);
 
     // Read parts / coordinates
     const xy = this._shpStream.readDoubleArray(numPoints * 2, true);
     let zValues: Float64Array | undefined;
     let mValues: Float64Array | undefined;
     if (this.hasZ) {
-      const zMin = this._shpStream.readDouble(true);
-      const zMax = this._shpStream.readDouble(true);
+      this._shpStream.readDouble(true); // skip zMin
+      this._shpStream.readDouble(true); // skip zMax
       zValues = this._shpStream.readDoubleArray(numPoints, true);
     }
     if (this.hasM) {
-      const mMin = this._shpStream.readDouble(true);
-      const mMax = this._shpStream.readDouble(true);
+      this._shpStream.readDouble(true); // skip mMin
+      this._shpStream.readDouble(true); // skip mMax
       mValues = this._shpStream.readDoubleArray(numPoints, true);
     }
 
     const geom = new ShpMultiPoint(header.type as ShpMultiPointType);
     for (let i = 0; i < numPoints; i++) {
-      let xyIdx = i * 2;
+      const xyIdx = i * 2;
       let coord: Coordinate;
       if (mValues) {
-        let m = this._checkMeasureNaN(mValues[i]);
+        const m = this._checkMeasureNaN(mValues[i]);
         if (zValues) {
           coord = new CoordXYZM(xy[xyIdx], xy[xyIdx + 1], zValues[i], m);
         } else {
@@ -289,13 +288,13 @@ export class ShapeReader {
 
   private _readPolygon(header: GeomHeader): ShpPolygon {
     const rings = this._readParts(() => new LinerarRing());
-    let poly = new ShpPolygon(header.type as ShpPolygonType);
+    const poly = new ShpPolygon(header.type as ShpPolygonType);
 
     /* Create parts from exterior rings (clockwise), and sort out holes (counter-clockwise)  */
-    let holes = new Array<LinerarRing>();
+    const holes: Array<LinerarRing> = [];
     rings.forEach((ring) => {
       if (ring.isClockWise()) {
-        let polyPart = new ShpPolygonPart(ring);
+        const polyPart = new ShpPolygonPart(ring);
         poly.parts.push(polyPart);
       } else {
         holes.push(ring);
@@ -308,11 +307,10 @@ export class ShapeReader {
         if (part.exteriorRing.contains(hole)) {
           part.interiorRings.push(hole);
           found = true;
-          return;
         }
       });
       if (!found) {
-        console.error("Orphan poly hole");
+        console.error('Orphan poly hole');
       }
     });
     return poly;

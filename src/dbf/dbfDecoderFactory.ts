@@ -1,6 +1,6 @@
-import { CpLUT } from "./codePageLUT";
-import { encodingExists, decode } from "iconv-lite";
-import "buffer";
+import { CpLUT } from './codePageLUT';
+import { encodingExists, decode } from 'iconv-lite';
+import 'buffer';
 
 // ESRI article on encoding: https://support.esri.com/en/technical-article/000013192
 // "If a dBASE file lacks an LDID or a .CPG file, it assumes the file is encoded in the Windows (ANSI/Multi-byte) code page."
@@ -36,10 +36,10 @@ class IconvDecoder implements DbfDecoder {
 export class DbfDecoderFactory {
   public static fromCpgString(cpg: string): DbfDecoder {
     if (!cpg) {
-      throw new Error("No codepage/CPG string provided");
+      throw new Error('No codepage/CPG string provided');
     }
     if (cpg.match(regExUTF8)) {
-      return new IconvDecoder("utf8");
+      return new IconvDecoder('utf8');
     }
     let m = cpg.match(regExIso);
     if (m != null) {
@@ -54,13 +54,13 @@ export class DbfDecoderFactory {
       }
       return new IconvDecoder(encoding);
     }
-    return new IconvDecoder("cp1252");
+    return new IconvDecoder('cp1252');
   }
 
   public static fromDbfLangCode(code: number): DbfDecoder | undefined {
-    if (code == 0) {
+    if (code === 0) {
       // Default = 1252
-      return new IconvDecoder("cp1252");
+      return new IconvDecoder('cp1252');
     }
     if (code in CpLUT) {
       const cpId = CpLUT[code][0] as number;

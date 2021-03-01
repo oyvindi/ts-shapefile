@@ -14,7 +14,7 @@ export class MemoryStream {
 
   public seek(offset: number): MemoryStream {
     if (offset > this._size + 1) {
-      throw new Error("Offset out of bounds");
+      throw new Error('Offset out of bounds');
     }
     this._offset = offset;
     return this;

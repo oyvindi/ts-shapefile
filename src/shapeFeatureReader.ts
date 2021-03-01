@@ -1,8 +1,8 @@
-import { ShpHeader } from "./shp/shapeTypes";
-import { ShapeReader } from "./shp/shapeReader";
-import { ShapeFeature, ShapeFeatureCollection } from "./shapeFeature";
-import { DbfReader } from "./dbf/dbfReader";
-import { DbfFieldDescr } from "./dbf/dbfTypes";
+import { ShpHeader } from './shp/shapeTypes';
+import { ShapeReader } from './shp/shapeReader';
+import { ShapeFeature, ShapeFeatureCollection } from './shapeFeature';
+import { DbfReader } from './dbf/dbfReader';
+import { DbfFieldDescr } from './dbf/dbfTypes';
 
 export class ShapeFeatureReader {
   private _shpReader: ShapeReader;
@@ -21,7 +21,7 @@ export class ShapeFeatureReader {
   }
 
   private constructor(shapeFile: ShapeReader, dbfReader?: DbfReader) {
-    if (shapeFile.recordCount != dbfReader?.recordCount) {
+    if (shapeFile.recordCount !== dbfReader?.recordCount) {
       throw new Error(
         `Record count mismatch: SHP-file has ${shapeFile.recordCount} records, DBF has ${dbfReader?.recordCount}`
       );
@@ -37,12 +37,12 @@ export class ShapeFeatureReader {
     cpg?: ArrayBuffer
   ): Promise<ShapeFeatureReader> {
     if (shp == null) {
-      throw new Error("No .shp buffer provided");
+      throw new Error('No .shp buffer provided');
     }
     if (shx == null) {
-      throw new Error("No .shx buffer provided");
+      throw new Error('No .shx buffer provided');
     }
-    let shapeReader = await ShapeReader.fromArrayBuffer(shp, shx);
+    const shapeReader = await ShapeReader.fromArrayBuffer(shp, shx);
     let dbfReader: DbfReader | undefined;
     if (dbf != null) {
       dbfReader = await DbfReader.fromArrayBuffer(dbf, cpg);
@@ -52,12 +52,12 @@ export class ShapeFeatureReader {
 
   public static async fromFiles(shp: File, shx: File, dbf?: File, cpg?: File): Promise<ShapeFeatureReader> {
     if (shp == null) {
-      throw new Error("No .shp file provided");
+      throw new Error('No .shp file provided');
     }
     if (shx == null) {
-      throw new Error("No .shx file provided");
+      throw new Error('No .shx file provided');
     }
-    let shapeReader = await ShapeReader.fromFile(shp, shx);
+    const shapeReader = await ShapeReader.fromFile(shp, shx);
     let dbfReader: DbfReader | undefined;
     if (dbf != null) {
       dbfReader = await DbfReader.fromFile(dbf, cpg);
@@ -67,7 +67,7 @@ export class ShapeFeatureReader {
 
   public readFeature(index: number): ShapeFeature {
     if (index < 0 || index > this.featureCount - 1) {
-      throw new Error("Feature index out of range");
+      throw new Error('Feature index out of range');
     }
     const geom = this._shpReader!.readGeom(index);
     let attrs: Array<any> = [];
@@ -78,7 +78,7 @@ export class ShapeFeatureReader {
   }
 
   public readFeatureCollection(): ShapeFeatureCollection {
-    let collection = new ShapeFeatureCollection(this._dbfReader?.fields);
+    const collection = new ShapeFeatureCollection(this._dbfReader?.fields);
     for (let i = 0; i < this.featureCount; i++) {
       const feature = this.readFeature(i);
       collection.features.push(feature);

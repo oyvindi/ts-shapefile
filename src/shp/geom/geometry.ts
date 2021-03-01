@@ -1,6 +1,7 @@
-import { CoordType } from "./coordinate";
-import { GeoJsonGeom } from "./geoJson";
+import { CoordType } from './coordinate';
+import { GeoJsonGeom } from './geoJson';
 
+/* eslint-disable  no-unused-vars */
 export enum ShapeType {
   Null = 0,
   Point = 1,
@@ -16,10 +17,11 @@ export enum ShapeType {
   PolygonM = 25,
   MultiPointM = 28,
 }
+/* eslint-enable  no-unused-vars */
 
 export class GeomUtil {
   public static pointType(shapeType: ShapeType): CoordType {
-    if (shapeType == 0) {
+    if (shapeType === 0) {
       return CoordType.NULL;
     } else if (shapeType < 10) {
       return CoordType.XY;
@@ -33,19 +35,19 @@ export class GeomUtil {
 
   public static hasZ(shapeType: ShapeType): boolean {
     const type = GeomUtil.pointType(shapeType);
-    return type == CoordType.XYZM;
+    return type === CoordType.XYZM;
   }
 
   public static hasM(shapeType: ShapeType): boolean {
     const type = GeomUtil.pointType(shapeType);
-    return type == CoordType.XYZM || type == CoordType.XYM;
+    return type === CoordType.XYZM || type === CoordType.XYM;
   }
 
   public static shapeTypeStr(shapeType: ShapeType): string {
     if (shapeType in ShapeType) {
       return ShapeType[shapeType];
     }
-    return "Unknown";
+    return 'Unknown';
   }
 }
 
@@ -66,8 +68,8 @@ export abstract class ShpGeometryBase implements ShpGeometry {
   constructor(type: ShapeType) {
     this.type = type;
     const pointType = GeomUtil.pointType(this.type);
-    this.hasZ = pointType == CoordType.XYZM;
-    this.hasM = pointType == CoordType.XYZM || pointType == CoordType.XYM;
+    this.hasZ = pointType === CoordType.XYZM;
+    this.hasM = pointType === CoordType.XYZM || pointType === CoordType.XYM;
   }
 
   public abstract toGeoJson(): GeoJsonGeom;
