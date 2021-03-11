@@ -1,6 +1,6 @@
 import { Coordinate } from './coordinate';
 import { ShapeType, ShpGeometryBase } from './geometry';
-import { GeoJsonType, GeoJsonGeom, GeoJsonCoordinateSequence } from './geoJson';
+import { GeoJsonGeom, GeoJsonCoordinateSequence, GeoJsonMultiPolygon, GeoJsonPolygon } from './geoJson';
 import { LineString } from './polyLine';
 
 export class LinerarRing extends LineString {
@@ -72,7 +72,7 @@ export class ShpPolygonPart {
     const rings: Array<GeoJsonCoordinateSequence> = [];
     rings.push(this.exteriorRing.toGeoJson());
     rings.concat(this.interiorRings.map((r) => r.toGeoJson()));
-    return {
+    return <GeoJsonPolygon> {
       type: 'Polygon',
       coordinates: rings
     };
@@ -85,19 +85,15 @@ export class ShpPolygon extends ShpGeometryBase {
   readonly parts: Array<ShpPolygonPart> = [];
 
   public toGeoJson(): GeoJsonGeom {
-    let coords: Array<GeoJsonCoordinateSequence> = [];
-    let geomType: GeoJsonType;
-
     if (this.parts.length > 1) {
-      geomType = 'MultiPolygon';
-      this.parts.forEach((part) => coords.concat(part.toJson()));
-    } else {
-      geomType = 'Polygon';
-      coords = this.parts[0].toJson();
+      return <GeoJsonMultiPolygon> {
+        type: 'MultiPolygon',
+        coordinates: this.parts.map((part) => part.toJson())
+      };
     }
-    return {
-      type: geomType,
-      coordinates: coords
+    return <GeoJsonPolygon> {
+      type: 'Polygon',
+      coordinates: this.parts[0].toJson()
     };
   }
 }

@@ -1,9 +1,9 @@
-import { assert } from "chai";
-import { ShapeReader } from "../../src/shp/shapeReader";
-import { ShapeType } from "../../src/shp/geom/geometry";
+import { assert } from 'chai';
+import { ShapeReader } from '../../src/shp/shapeReader';
+import { ShapeType } from '../../src/shp/geom/geometry';
 
-import { openTestFile } from "../util/testUtils";
-import { Coordinate } from "../../src/shp/geom/coordinate";
+import { openTestFile } from '../util/testUtils';
+import { Coordinate } from '../../src/shp/geom/coordinate';
 
 export const tolerance: number = 0.0000001;
 
@@ -23,9 +23,9 @@ export const createAndVerifyReader = async (
 ): Promise<ShapeReader> => {
   const shpFile = await openTestFile(shpFileName);
   const shxFile = await openTestFile(shxFileName);
-  let reader = await ShapeReader.fromFile(shpFile, shxFile);
+  const reader = await ShapeReader.fromFile(shpFile, shxFile);
   assert.equal(reader.shapeType, expectedType);
-  assert.strictEqual(reader.recordCount, expectedGeomCount, "Unexpected number of records");
+  assert.strictEqual(reader.recordCount, expectedGeomCount, 'Unexpected number of records');
   return reader;
 };
 
@@ -43,7 +43,7 @@ export interface xyzm extends xym {
 }
 
 export const assertCoordsXY = (coords: Array<Coordinate>, xy: Array<xy>) => {
-  assert.equal(coords.length, xy.length, "Unexpected number of vertices");
+  assert.equal(coords.length, xy.length, 'Unexpected number of vertices');
   for (let i = 0; i < coords.length; i++) {
     assert.closeTo(coords[i].x, xy[i].x, tolerance, `Point ${i}.x is wrong`);
     assert.closeTo(coords[i].y, xy[i].y, tolerance, `Point ${i}.y is wrong`);
