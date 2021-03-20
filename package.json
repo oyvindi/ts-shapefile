@@ -7,6 +7,8 @@
   "types": "dist/types/index.d.ts",
   "author": "Oyvind Idland",
   "license": "MIT",
+  "homepage": "https://github.com/oyvindi/ts-shapefile",
+  "keywords": ["shapefile", "ESRI", "ArcGIS", "TypeScript"],
   "publishConfig": {
     "browser": "dist/ts-shape.browser.js",
     "main": "dist/ts-shape.cjs.js",
