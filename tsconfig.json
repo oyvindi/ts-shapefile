@@ -14,7 +14,7 @@
         "noEmit": true,
         "outDir": "./dist",
         "jsx": "react",
-        "target": "ES5",
+        "target": "ES6",
         "sourceMap": true,
         "moduleResolution": "node",
         "lib": [
