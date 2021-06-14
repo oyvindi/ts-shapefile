@@ -1,6 +1,6 @@
 {
   "name": "ts-shapefile",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "TypeScript based shapefile reader",
   "main": "./ts-shape.cjs.js",
   "module": "./ts-shape.esm.js",
