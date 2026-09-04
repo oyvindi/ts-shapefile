@@ -14,5 +14,5 @@
     "strict": true
   },
   "include": ["./index.ts", "src/**/*.ts"],
-  "exclude": ["./tests/", "./node_modules/", "./dist/"]
+  "exclude": ["./tests/", "./node_modules/", "./dist/", "./node.ts", "./src/node/"]
 }

@@ -7,6 +7,36 @@ A TypeScript implementation of ESRI Shapefiles, in browsers or NodeJS.
 
 At the moment, only File (e.g from a HTML file input) sources are supported. The whole files will be consumed and parsed. In order to not kill the browser with large files, a size check should be performed before consuming.
 
+For Node.js consumers, a convenience API is available that reads shapefiles directly from file paths. See [Node.js usage](#nodejs-usage) below.
+
+### Node.js usage
+
+In Node.js, you can load a shapefile from a single path using the `./node` subpath export. The `ShapefileFs` class reads the `.shp` file and automatically resolves the sibling `.shx`, `.dbf`, and `.cpg` files by swapping the extension. The `.shx` file is required; `.dbf` and `.cpg` are optional.
+
+```typescript
+import { ShapefileFs } from 'ts-shapefile/node';
+
+// Read features (geometry + attributes) from a single path
+const reader = await ShapefileFs.fromPath('path/to/myfile.shp');
+console.log(`Feature count: ${reader.featureCount}`);
+const collection = reader.readFeatureCollection();
+collection.features.forEach((feature) => {
+  console.log(JSON.stringify(feature.toGeoJson()));
+});
+```
+
+Geometry-only and attributes-only variants are also available:
+
+```typescript
+import { ShapefileFs } from 'ts-shapefile/node';
+
+// Geometry only (.shp + .shx)
+const shpReader = await ShapefileFs.fromPathShp('path/to/myfile.shp');
+
+// Attributes only (.dbf + optional .cpg)
+const dbfReader = await ShapefileFs.fromPathDbf('path/to/myfile.dbf');
+```
+
 ### Reading features (geometry + attributes)
 
 Features can be read one by one, or simply as a whole collection.

@@ -13,6 +13,12 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs",
       "default": "./dist/index.cjs"
+    },
+    "./node": {
+      "types": "./dist/node.d.mts",
+      "import": "./dist/node.mjs",
+      "require": "./dist/node.cjs",
+      "default": "./dist/node.cjs"
     }
   },
   "author": "Oyvind Idland",
