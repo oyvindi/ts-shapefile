@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ShapeType } from '../src/shp/geom/geometry';
 import { ShpPoint, ShpPointType } from '../src/shp/geom/point';
-import { assertValueOrNan, createAndVerifyReader, tolerance } from './util/shapeTestUtils';
+import { assertValueOrNan, createAndVerifyReader } from './util/shapeTestUtils';
 
 const assertPoint = (p: ShpPoint, expectedX: number, expectedY: number, expectedType: ShpPointType) => {
   expect(p.x, 'Wrong X ordinate').toBeCloseTo(expectedX, 7);

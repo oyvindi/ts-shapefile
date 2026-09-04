@@ -9,14 +9,14 @@ export class FileMock implements File {
   size: number;
   type: string;
 
-  slice(start?: number, end?: number, contentType?: string): Blob {
-    throw new Error("Method not implemented.");
+  slice(_start?: number, _end?: number, _contentType?: string): Blob {
+    throw new Error('Method not implemented.');
   }
-  stream(): ReadableStream<any> {
-    throw new Error("Method not implemented.");
+  stream(): ReadableStream<unknown> {
+    throw new Error('Method not implemented.');
   }
   text(): Promise<string> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   public async arrayBuffer(): Promise<ArrayBuffer> {

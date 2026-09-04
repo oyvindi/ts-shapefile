@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ShapeType } from '../src/shp/geom/geometry';
-import { createAndVerifyReader, tolerance } from './util/shapeTestUtils';
+import { createAndVerifyReader } from './util/shapeTestUtils';
 
 describe('ShapeReader', () => {
   describe('extent', () => {

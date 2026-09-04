@@ -1,7 +1,6 @@
 import { CoordType } from './coordinate';
 import { GeoJsonGeom } from './geoJson';
 
-/* eslint-disable  no-unused-vars */
 export enum ShapeType {
   Null = 0,
   Point = 1,
@@ -15,9 +14,8 @@ export enum ShapeType {
   PointM = 21,
   PolyLineM = 23,
   PolygonM = 25,
-  MultiPointM = 28,
+  MultiPointM = 28
 }
-/* eslint-enable  no-unused-vars */
 
 export class GeomUtil {
   public static pointType(shapeType: ShapeType): CoordType {

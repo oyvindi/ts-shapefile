@@ -60,12 +60,12 @@ export class ShapeReader {
     try {
       shpBytes = await shp.arrayBuffer();
     } catch (err) {
-      throw new Error(`Failed to open .shp: ${err instanceof Error ? err.message : String(err)}`);
+      throw new Error(`Failed to open .shp: ${err instanceof Error ? err.message : String(err)}`, { cause: err });
     }
     try {
       shxBytes = await shx.arrayBuffer();
     } catch (err) {
-      throw new Error(`Failed to open .shx: ${err instanceof Error ? err.message : String(err)}`);
+      throw new Error(`Failed to open .shx: ${err instanceof Error ? err.message : String(err)}`, { cause: err });
     }
     return this.fromArrayBuffer(shpBytes, shxBytes);
   }
@@ -196,7 +196,8 @@ export class ShapeReader {
         return new ShpNullGeom(recHead.type);
       }
       throw new Error(
-        `Unexpected shape type ${GeomUtil.shapeTypeStr(recHead.type)}(${recHead.type as number
+        `Unexpected shape type ${GeomUtil.shapeTypeStr(recHead.type)}(${
+          recHead.type as number
         }), expected ${GeomUtil.shapeTypeStr(this._shpHeader.type)}`
       );
     }

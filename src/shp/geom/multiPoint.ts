@@ -8,7 +8,7 @@ export class ShpMultiPoint extends ShpGeometryBase {
   readonly points: Array<Coordinate> = [];
 
   public toGeoJson(): GeoJsonGeom {
-    return <GeoJsonMultiPoint> {
+    return <GeoJsonMultiPoint>{
       type: 'MultiPoint',
       coordinates: this.points.map((p) => p.toGeoJson())
     };

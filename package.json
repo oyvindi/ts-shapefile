@@ -5,6 +5,7 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.cts",
+  "type": "module",
   "author": "Oyvind Idland",
   "license": "MIT",
   "homepage": "https://github.com/oyvindi/ts-shapefile",
@@ -21,28 +22,26 @@
     "types": "dist/index.d.cts"
   },
   "devDependencies": {
-    "@placemarkio/check-geojson": "^0.1.14",
-    "@rolldown/plugin-node-polyfills": "^1.0.3",
-    "@types/node": "^26.4.1",
-    "@typescript-eslint/eslint-plugin": "^4.15.2",
-    "@typescript-eslint/parser": "^4.15.2",
-    "buffer": "^6.0.3",
-    "eslint": "^7.21.0",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-promise": "^4.3.1",
-    "prettier": "^2.2.1",
-    "tsdown": "^0.23.0-rc.1",
-    "typescript": "^7.0.2",
-    "vitest": "^5.0.0"
+    "@eslint/js": "10.0.1",
+    "@placemarkio/check-geojson": "0.1.14",
+    "@rolldown/plugin-node-polyfills": "1.0.3",
+    "@types/node": "26.4.1",
+    "buffer": "6.0.3",
+    "eslint": "10.9.1",
+    "globals": "17.11.0",
+    "prettier": "3.9.6",
+    "tsdown": "0.23.0-rc.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.69.0",
+    "vitest": "5.0.0"
   },
   "scripts": {
     "build": "tsdown",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "dependencies": {
-    "iconv-lite": "^0.6.2"
+    "iconv-lite": "0.7.3"
   }
 }

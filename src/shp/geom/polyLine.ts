@@ -26,12 +26,12 @@ export class ShpPolyLine extends ShpGeometryBase {
 
   public toGeoJson(): GeoJsonGeom {
     if (this.parts.length < 2) {
-      return <GeoJsonLineString> {
+      return <GeoJsonLineString>{
         type: 'LineString',
         coordinates: this.parts[0].toGeoJson()
       };
     }
-    return <GeoJsonMultiLineString> {
+    return <GeoJsonMultiLineString>{
       type: 'MultiLineString',
       coordinates: this.parts.map((p) => p.toGeoJson())
     };

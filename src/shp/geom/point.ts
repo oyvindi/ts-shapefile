@@ -29,7 +29,7 @@ export class ShpPoint extends ShpGeometryBase {
   }
 
   public toGeoJson(): GeoJsonGeom {
-    return <GeoJsonPoint> {
+    return <GeoJsonPoint>{
       type: 'Point',
       coordinates: this._point.toGeoJson()
     };

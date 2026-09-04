@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { DbfReader } from '../src/dbf/dbfReader';
 import { DbfFieldDescr, DbfFieldType } from '../src/dbf/dbfTypes';
-import { tolerance } from './util/shapeTestUtils';
 import { openTestFile } from './util/testUtils';
 
 const cpDir = 'dbf_codepage/';

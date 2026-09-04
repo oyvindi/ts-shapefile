@@ -7,16 +7,16 @@ export class ShapeFeature {
 
   readonly geom?: ShpGeometry;
 
-  readonly attrs?: Array<any>;
+  readonly attrs?: Array<unknown>;
 
-  constructor(geom: ShpGeometry, attributes?: Array<any>, fieldInfo?: Array<DbfFieldDescr>) {
+  constructor(geom: ShpGeometry, attributes?: Array<unknown>, fieldInfo?: Array<DbfFieldDescr>) {
     this.geom = geom;
     this.attrs = attributes;
     this._fields = fieldInfo;
   }
 
   public toGeoJson(): GeoJsonFeature {
-    const props: any = {};
+    const props: Record<string, unknown> = {};
     if (this.attrs && this._fields) {
       for (let i = 0; i < this._fields.length; i++) {
         props[this._fields[i].name] = this.attrs[i];

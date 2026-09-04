@@ -42,7 +42,7 @@ export interface GeoJsonMultiPolygon extends GeoJsonGeom {
 export interface GeoJsonFeature extends GeoJsonObject {
   readonly type: 'Feature';
   geometry: GeoJsonGeom;
-  properties: Object;
+  properties: object;
 }
 
 export interface GeoJsonFeatureCollection extends GeoJsonObject {

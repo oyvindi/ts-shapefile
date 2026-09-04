@@ -16,7 +16,7 @@ export default defineConfig({
   // For CJS it stays external (Node's require() handles it natively).
   deps: {
     alwaysBundle: ['iconv-lite'],
-    onlyBundle: false,
+    onlyBundle: false
   },
   // UMD needs a global variable name for browser usage.
   outputOptions(outputOptions, format) {
@@ -34,5 +34,5 @@ export default defineConfig({
       opts.plugins = [...(opts.plugins ?? []), nodePolyfills()];
     }
     return opts;
-  },
+  }
 });

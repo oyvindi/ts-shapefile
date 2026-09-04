@@ -1,13 +1,11 @@
 import { GeoJsonCoordXY, GeoJsonCoordXYZ } from './geoJson';
 
-/* eslint-disable  no-unused-vars */
 export enum CoordType {
   NULL = 0,
   XY = 2,
   XYM = 3,
-  XYZM = 4,
+  XYZM = 4
 }
-/* eslint-enable  no-unused-vars */
 
 export interface Coordinate {
   readonly x: number;
@@ -17,8 +15,8 @@ export interface Coordinate {
 
   readonly hasZ: boolean;
   readonly hasM: boolean;
-  toJson(): any;
-  toGeoJson(): any;
+  toJson(): number[];
+  toGeoJson(): GeoJsonCoordXY | GeoJsonCoordXYZ;
 }
 
 abstract class CoordinateBase implements Coordinate {
@@ -29,7 +27,7 @@ abstract class CoordinateBase implements Coordinate {
   abstract hasZ: boolean;
   abstract hasM: boolean;
 
-  public toJson(): any {
+  public toJson(): number[] {
     if (this.hasZ) {
       return [this.x, this.y, this.z, this.m];
     }

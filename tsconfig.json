@@ -1,38 +1,25 @@
 {
-    "compilerOptions": {
-        "allowSyntheticDefaultImports": true,
-        "noFallthroughCasesInSwitch": true,
-        "declaration": true,
-        "rootDir": ".",
-        "module": "ESNext",
-        "allowJs": true,
-        "forceConsistentCasingInFileNames": true,
-        "isolatedModules": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "noImplicitAny": true,
-        "outDir": "./dist",
-        "jsx": "react",
-        "target": "ES6",
-        "sourceMap": true,
-        "moduleResolution": "bundler",
-        "lib": [
-            "DOM",
-            "ES5",
-            "ES2016",
-            "DOM.Iterable",
-            "ScriptHost"
-        ],
-        "resolveJsonModule": true,
-        "strict": true
-    },
-    "include": [
-        "./index.ts",
-        "src/**/*.ts"
-    ],
-    "exclude": [
-        "./tests/",
-        "./node_modules/",
-        "./dist/"
-    ],
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "declaration": true,
+    "rootDir": ".",
+    "module": "ESNext",
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "outDir": "./dist",
+    "jsx": "react",
+    "target": "ES6",
+    "sourceMap": true,
+    "moduleResolution": "bundler",
+    "lib": ["DOM", "ES5", "ES2016", "DOM.Iterable", "ScriptHost"],
+    "resolveJsonModule": true,
+    "strict": true
+  },
+  "include": ["./index.ts", "src/**/*.ts"],
+  "exclude": ["./tests/", "./node_modules/", "./dist/"]
 }

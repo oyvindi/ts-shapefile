@@ -2,7 +2,7 @@ import { MemoryStream } from '../util/memoryStream';
 import { DbfFieldDescr, DbfFieldType, DbfHeader } from './dbfTypes';
 import { DbfDecoder, DbfDecoderFactory } from './dbfDecoderFactory';
 
-const FieldTypeNames: any = {
+const FieldTypeNames: Record<string, string> = {
   C: 'Character',
   N: 'Number',
   L: 'Logical',
@@ -49,7 +49,7 @@ export class DbfReader {
       }
       return this.fromArrayBuffer(buffer, cpgBuf);
     } catch (err) {
-      throw new Error(`Failed to open .dbf file: ${err instanceof Error ? err.message : String(err)}`);
+      throw new Error(`Failed to open .dbf file: ${err instanceof Error ? err.message : String(err)}`, { cause: err });
     }
   }
 
@@ -63,7 +63,9 @@ export class DbfReader {
       }
       return new DbfReader(buffer, decoder);
     } catch (err) {
-      throw new Error(`Unexpected error when opening .dbf: ${err instanceof Error ? err.message : String(err)}`);
+      throw new Error(`Unexpected error when opening .dbf: ${err instanceof Error ? err.message : String(err)}`, {
+        cause: err
+      });
     }
   }
 
@@ -129,11 +131,11 @@ export class DbfReader {
     };
   }
 
-  public readRecord(index: number): any[] {
+  public readRecord(index: number): unknown[] {
     let offset = this._recordStartOffset + index * this._recordSize;
     this._stream.seek(offset);
     const deletedFlag = this._stream.readByte();
-    const result: Array<any> = [];
+    const result: unknown[] = [];
     if (deletedFlag === 0x2a) {
       // Deleted record, fill with null
       this._fields.forEach(() => result.push(null));
@@ -196,7 +198,7 @@ export class DbfReader {
     return new Date(+m[1], +m[2], +m[3]);
   }
 
-  private _readLogicalValue(field: DbfFieldDescr): boolean | null {
+  private _readLogicalValue(_field: DbfFieldDescr): boolean | null {
     const charCode = this._stream.readByte();
     switch (String.fromCharCode(charCode)) {
       case 'y':

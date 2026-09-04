@@ -70,7 +70,7 @@ export class ShapeFeatureReader {
       throw new Error('Feature index out of range');
     }
     const geom = this._shpReader!.readGeom(index);
-    let attrs: Array<any> = [];
+    let attrs: Array<unknown> = [];
     if (this._dbfReader != null) {
       attrs = this._dbfReader.readRecord(index);
     }

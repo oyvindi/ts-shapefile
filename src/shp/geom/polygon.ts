@@ -24,7 +24,7 @@ export class LinerarRing extends LineString {
     const coords = this.coords;
     for (let i = 0, j = coords.length - 1; i < coords.length; j = i++) {
       if (
-        (coords[i].y > point.y) !== (coords[j].y > point.y) &&
+        coords[i].y > point.y !== coords[j].y > point.y &&
         point.x < ((coords[j].x - coords[i].x) * (point.y - coords[i].y)) / (coords[j].y - coords[i].y) + coords[i].x
       ) {
         inside = !inside;
@@ -72,7 +72,7 @@ export class ShpPolygonPart {
     const rings: Array<GeoJsonCoordinateSequence> = [];
     rings.push(this.exteriorRing.toGeoJson());
     rings.push(...this.interiorRings.map((r) => r.toGeoJson()));
-    return <GeoJsonPolygon> {
+    return <GeoJsonPolygon>{
       type: 'Polygon',
       coordinates: rings
     };
@@ -86,12 +86,12 @@ export class ShpPolygon extends ShpGeometryBase {
 
   public toGeoJson(): GeoJsonGeom {
     if (this.parts.length > 1) {
-      return <GeoJsonMultiPolygon> {
+      return <GeoJsonMultiPolygon>{
         type: 'MultiPolygon',
         coordinates: this.parts.map((part) => part.toJson())
       };
     }
-    return <GeoJsonPolygon> {
+    return <GeoJsonPolygon>{
       type: 'Polygon',
       coordinates: this.parts[0].toJson()
     };

@@ -2,9 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { geoJsonAssert } from './util/geoJsonAssert';
 import { ShapeType } from '../src/shp/geom/geometry';
 import { createAndVerifyReader } from './util/shapeTestUtils';
-import { GeoJsonCoord, GeoJsonCoordinateSequence, GeoJsonLineString, GeoJsonMultiPoint, GeoJsonMultiPolygon, GeoJsonPoint, GeoJsonPolygon } from '../src/shp/geom/geoJson';
-
-const tolerance = 0.000000001;
+import {
+  GeoJsonCoord,
+  GeoJsonCoordinateSequence,
+  GeoJsonLineString,
+  GeoJsonMultiPoint,
+  GeoJsonMultiPolygon,
+  GeoJsonPoint,
+  GeoJsonPolygon
+} from '../src/shp/geom/geoJson';
 
 const assertPointsEqual = (p1: GeoJsonCoord, p2: GeoJsonCoord) => {
   expect(p1[0]).toBeCloseTo(p2[0], 9);
@@ -21,7 +27,7 @@ const assertPolyRingIsSane = (coords: GeoJsonCoordinateSequence, expectedCount: 
 
 type CoordDim = 2 | 3;
 
-const coordSequenceStringSane = (coords:GeoJsonCoordinateSequence, expectedCoordCount: number, coordDim : CoordDim) => {
+const coordSequenceStringSane = (coords: GeoJsonCoordinateSequence, expectedCoordCount: number, coordDim: CoordDim) => {
   expect(coords.length).toBe(expectedCoordCount);
   coords.forEach((p) => expect(p.length).toBe(coordDim));
 };
