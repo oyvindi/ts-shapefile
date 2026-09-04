@@ -6,6 +6,15 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.cts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "browser": "./dist/index.umd.js",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.cjs"
+    }
+  },
   "author": "Oyvind Idland",
   "license": "MIT",
   "homepage": "https://github.com/oyvindi/ts-shapefile",
@@ -15,12 +24,6 @@
     "ArcGIS",
     "TypeScript"
   ],
-  "publishConfig": {
-    "browser": "dist/index.umd.js",
-    "main": "dist/index.cjs",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.cts"
-  },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@placemarkio/check-geojson": "0.1.14",
