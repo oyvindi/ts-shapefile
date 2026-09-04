@@ -1,10 +1,10 @@
 {
   "name": "ts-shapefile",
   "version": "1.0.10",
-  "description": "TypeScript based shapefile reader",
-  "main": "./ts-shape.cjs.js",
-  "module": "./ts-shape.esm.js",
-  "types": "./types/index.d.ts",
+  "description": "Library for reading ESRI Shapefiles",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
   "author": "Oyvind Idland",
   "license": "MIT",
   "homepage": "https://github.com/oyvindi/ts-shapefile",
@@ -15,16 +15,16 @@
     "TypeScript"
   ],
   "publishConfig": {
-    "browser": "dist/ts-shape.browser.js",
-    "main": "dist/ts-shape.cjs.js",
-    "module": "dist/ts-shape.esm.js"
+    "browser": "dist/index.umd.js",
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.cts"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@rolldown/plugin-node-polyfills": "^1.0.3",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",
+    "@types/node": "^26.4.1",
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
     "buffer": "^6.0.3",
@@ -39,17 +39,13 @@
     "geojsonhint": "^2.0.0",
     "mocha": "^8.2.1",
     "prettier": "^2.2.1",
-    "rollup": "^2.34.2",
-    "rollup-plugin-copy": "^3.4.0",
-    "rollup-plugin-delete": "^2.0.0",
-    "rollup-plugin-node-polyfills": "^0.2.1",
-    "rollup-plugin-typescript2": "^0.29.0",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.1.2"
+    "tsdown": "^0.23.0-rc.1",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
   },
   "scripts": {
-    "build": "rollup --config",
-    "test": "cross-env TS_NODE_PROJECT=\"tsconfig.tests.json\"  mocha"
+    "build": "tsdown",
+    "test": "cross-env TSX_TSCONFIG_PATH=\"tsconfig.tests.json\"  mocha"
   },
   "dependencies": {
     "iconv-lite": "^0.6.2"

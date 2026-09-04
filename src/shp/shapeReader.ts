@@ -60,12 +60,12 @@ export class ShapeReader {
     try {
       shpBytes = await shp.arrayBuffer();
     } catch (err) {
-      throw new Error(`Failed to open .shp: ${err.message}`);
+      throw new Error(`Failed to open .shp: ${err instanceof Error ? err.message : String(err)}`);
     }
     try {
       shxBytes = await shx.arrayBuffer();
     } catch (err) {
-      throw new Error(`Failed to open .shp: ${err.message}`);
+      throw new Error(`Failed to open .shx: ${err instanceof Error ? err.message : String(err)}`);
     }
     return this.fromArrayBuffer(shpBytes, shxBytes);
   }

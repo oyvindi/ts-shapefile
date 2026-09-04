@@ -1,7 +1,6 @@
 import { MemoryStream } from '../util/memoryStream';
 import { DbfFieldDescr, DbfFieldType, DbfHeader } from './dbfTypes';
 import { DbfDecoder, DbfDecoderFactory } from './dbfDecoderFactory';
-import 'buffer';
 
 const FieldTypeNames: any = {
   C: 'Character',
@@ -50,7 +49,7 @@ export class DbfReader {
       }
       return this.fromArrayBuffer(buffer, cpgBuf);
     } catch (err) {
-      throw new Error(`Failed to open .dbf file: ${err.message}`);
+      throw new Error(`Failed to open .dbf file: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 
@@ -64,7 +63,7 @@ export class DbfReader {
       }
       return new DbfReader(buffer, decoder);
     } catch (err) {
-      throw new Error(`Unexpected error when opening .dbf: ${err.message}`);
+      throw new Error(`Unexpected error when opening .dbf: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 

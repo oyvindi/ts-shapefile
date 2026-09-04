@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "nodenext",
         "target": "ES6",
         "lib": [
             "es2016",
@@ -10,7 +10,9 @@
         "noImplicitAny": false,
         "removeComments": true,
         "inlineSourceMap": true,
-        "moduleResolution": "node"
+        "moduleResolution": "nodenext",
+        "skipLibCheck": true,
+        "types": ["node"]
     },
     "include": [
         "./src/**/*.ts",

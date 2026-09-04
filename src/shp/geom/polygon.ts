@@ -59,7 +59,7 @@ export class ShpPolygonPart {
 
   // Converts the part to a GeoJSON ring collection
   public toJson(): Array<GeoJsonCoordinateSequence> {
-    const res = [];
+    const res: Array<GeoJsonCoordinateSequence> = [];
     // GeoJSON follows the "right hand rule", where exterior rings are
     // counter-clockwise, and interiors clockwise. Therefore we reverse() them.
     res.push(this.exteriorRing.toGeoJson());
@@ -71,7 +71,7 @@ export class ShpPolygonPart {
   public toGeoJson(): GeoJsonGeom {
     const rings: Array<GeoJsonCoordinateSequence> = [];
     rings.push(this.exteriorRing.toGeoJson());
-    rings.concat(this.interiorRings.map((r) => r.toGeoJson()));
+    rings.push(...this.interiorRings.map((r) => r.toGeoJson()));
     return <GeoJsonPolygon> {
       type: 'Polygon',
       coordinates: rings

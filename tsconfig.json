@@ -3,7 +3,7 @@
         "allowSyntheticDefaultImports": true,
         "noFallthroughCasesInSwitch": true,
         "declaration": true,
-        "declarationDir": "./dist/types",
+        "rootDir": ".",
         "module": "ESNext",
         "allowJs": true,
         "forceConsistentCasingInFileNames": true,
@@ -11,12 +11,11 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "noImplicitAny": true,
-        "noEmit": true,
         "outDir": "./dist",
         "jsx": "react",
         "target": "ES6",
         "sourceMap": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "lib": [
             "DOM",
             "ES5",
@@ -28,6 +27,7 @@
         "strict": true
     },
     "include": [
+        "./index.ts",
         "src/**/*.ts"
     ],
     "exclude": [
