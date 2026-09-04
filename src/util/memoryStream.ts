@@ -13,20 +13,30 @@ export class MemoryStream {
   }
 
   public seek(offset: number): MemoryStream {
-    if (offset > this._size + 1) {
-      throw new Error('Offset out of bounds');
+    if (offset < 0 || offset > this._size) {
+      throw new Error(`Seek offset ${offset} out of bounds (size ${this._size})`);
     }
     this._offset = offset;
     return this;
   }
 
+  private _ensureBytes(byteCount: number): void {
+    if (this._offset + byteCount > this._size) {
+      throw new Error(
+        `Read of ${byteCount} bytes at offset ${this._offset} exceeds buffer size ${this._size}`
+      );
+    }
+  }
+
   public readInt16(littleEndian?: boolean): number {
+    this._ensureBytes(2);
     const result = this._dataView.getInt16(this._offset, littleEndian);
-    this._offset += 4;
+    this._offset += 2;
     return result;
   }
 
   public readInt32(littleEndian?: boolean): number {
+    this._ensureBytes(4);
     const result = this._dataView.getInt32(this._offset, littleEndian);
     this._offset += 4;
     return result;
@@ -41,6 +51,7 @@ export class MemoryStream {
   }
 
   public readDouble(littleEndian?: boolean): number {
+    this._ensureBytes(8);
     const result = this._dataView.getFloat64(this._offset, littleEndian);
     this._offset += 8;
     return result;
@@ -56,10 +67,12 @@ export class MemoryStream {
 
   /* Returns value at curent pos without advancing */
   public peekByte(): number {
+    this._ensureBytes(1);
     return this._dataView.getUint8(this._offset);
   }
 
   public readByte(): number {
+    this._ensureBytes(1);
     const result = this._dataView.getUint8(this._offset);
     this._offset += 1;
     return result;

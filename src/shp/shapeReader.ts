@@ -120,6 +120,12 @@ export class ShapeReader {
   private _readPartsInfo(): PartsInfo {
     const numParts = this._shpStream.readInt32(true);
     const numPoints = this._shpStream.readInt32(true);
+    if (numParts < 0 || numPoints < 0) {
+      throw new Error(`Invalid geometry: numParts=${numParts}, numPoints=${numPoints}`);
+    }
+    if (numParts > 0 && numPoints < numParts) {
+      throw new Error(`Invalid geometry: numPoints (${numPoints}) < numParts (${numParts})`);
+    }
     const partIndices = this._shpStream.readInt32Array(numParts, true);
     return {
       numParts: numParts,
@@ -247,6 +253,9 @@ export class ShapeReader {
   private _readMultiPoint(header: GeomHeader): ShpGeometry {
     this._readBbox(this._shpStream);
     const numPoints = this._shpStream.readInt32(true);
+    if (numPoints < 0) {
+      throw new Error(`Invalid MultiPoint geometry: numPoints=${numPoints}`);
+    }
 
     // Read parts / coordinates
     const xy = this._shpStream.readDoubleArray(numPoints * 2, true);
@@ -311,7 +320,7 @@ export class ShapeReader {
         }
       });
       if (!found) {
-        console.error('Orphan poly hole');
+        throw new Error('Orphan polygon hole: no containing exterior ring found');
       }
     });
     return poly;

@@ -51,7 +51,7 @@ export class GeomUtil {
 
 export interface ShpGeometry {
   type: ShapeType;
-  toGeoJson(): Geometry;
+  toGeoJson(): Geometry | null;
   readonly hasZ: boolean;
   readonly hasM: boolean;
 }
@@ -70,5 +70,5 @@ export abstract class ShpGeometryBase implements ShpGeometry {
     this.hasM = pointType === CoordType.XYZM || pointType === CoordType.XYM;
   }
 
-  public abstract toGeoJson(): Geometry;
+  public abstract toGeoJson(): Geometry | null;
 }

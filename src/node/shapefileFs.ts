@@ -25,7 +25,12 @@ export class ShapefileFs {
     if (shpPath == null) {
       throw new Error('No .shp path provided');
     }
-    const shp = toArrayBuffer(await readFile(shpPath));
+    let shp: ArrayBuffer;
+    try {
+      shp = toArrayBuffer(await readFile(shpPath));
+    } catch (err) {
+      throw new Error(`Failed to open .shp: ${err instanceof Error ? err.message : String(err)}`, { cause: err });
+    }
     const shxPath = swapExt(shpPath, '.shx');
     let shx: ArrayBuffer;
     try {
@@ -42,7 +47,12 @@ export class ShapefileFs {
     if (shpPath == null) {
       throw new Error('No .shp path provided');
     }
-    const shp = toArrayBuffer(await readFile(shpPath));
+    let shp: ArrayBuffer;
+    try {
+      shp = toArrayBuffer(await readFile(shpPath));
+    } catch (err) {
+      throw new Error(`Failed to open .shp: ${err instanceof Error ? err.message : String(err)}`, { cause: err });
+    }
     const shxPath = swapExt(shpPath, '.shx');
     let shx: ArrayBuffer;
     try {

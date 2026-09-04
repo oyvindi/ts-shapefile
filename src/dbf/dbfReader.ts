@@ -54,19 +54,17 @@ export class DbfReader {
   }
 
   public static async fromArrayBuffer(buffer: ArrayBuffer, cpgBuf?: ArrayBuffer): Promise<DbfReader> {
-    try {
-      let decoder: DbfDecoder | undefined;
-      if (cpgBuf) {
+    let decoder: DbfDecoder | undefined;
+    if (cpgBuf) {
+      try {
         const cpgDecoder = new TextDecoder();
         const cpgStr = await cpgDecoder.decode(cpgBuf);
         decoder = DbfDecoderFactory.fromCpgString(cpgStr);
+      } catch (err) {
+        throw new Error(`Failed to read .cpg: ${err instanceof Error ? err.message : String(err)}`, { cause: err });
       }
-      return new DbfReader(buffer, decoder);
-    } catch (err) {
-      throw new Error(`Unexpected error when opening .dbf: ${err instanceof Error ? err.message : String(err)}`, {
-        cause: err
-      });
     }
+    return new DbfReader(buffer, decoder);
   }
 
   private _readHeader(): DbfHeader {

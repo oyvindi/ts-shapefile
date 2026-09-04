@@ -1,5 +1,5 @@
 import { DbfFieldDescr } from './dbf/dbfTypes';
-import { Feature, FeatureCollection } from './shp/geom/geoJson';
+import { Feature, FeatureCollection, Geometry } from './shp/geom/geoJson';
 import { ShpGeometry } from './shp/geom/geometry';
 
 export class ShapeFeature {
@@ -15,7 +15,7 @@ export class ShapeFeature {
     this._fields = fieldInfo;
   }
 
-  public toGeoJson(): Feature {
+  public toGeoJson(): Feature<Geometry | null> {
     const props: Record<string, unknown> = {};
     if (this.attrs && this._fields) {
       for (let i = 0; i < this._fields.length; i++) {
@@ -23,7 +23,7 @@ export class ShapeFeature {
       }
     }
     return {
-      geometry: this.geom!.toGeoJson(),
+      geometry: this.geom ? this.geom.toGeoJson() : null,
       properties: props,
       type: 'Feature'
     };
@@ -49,7 +49,7 @@ export class ShapeFeatureCollection {
     this._fields = fields;
   }
 
-  public toGeoJson(): FeatureCollection {
+  public toGeoJson(): FeatureCollection<Geometry | null> {
     const features = this._features.map((feature) => feature.toGeoJson());
     return {
       type: 'FeatureCollection',
