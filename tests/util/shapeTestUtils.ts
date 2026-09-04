@@ -1,4 +1,4 @@
-import { assert } from 'chai';
+import { expect } from 'vitest';
 import { ShapeReader } from '../../src/shp/shapeReader';
 import { ShapeType } from '../../src/shp/geom/geometry';
 
@@ -9,9 +9,9 @@ export const tolerance: number = 0.0000001;
 
 export const assertValueOrNan = (value: number, expected: number, message?: string) => {
   if (isNaN(expected)) {
-    assert.isNaN(value, message);
+    expect(value, message).toBeNaN();
   } else {
-    assert.closeTo(value, expected, tolerance, message);
+    expect(value, message).toBeCloseTo(expected, 7);
   }
 };
 
@@ -24,8 +24,8 @@ export const createAndVerifyReader = async (
   const shpFile = await openTestFile(shpFileName);
   const shxFile = await openTestFile(shxFileName);
   const reader = await ShapeReader.fromFile(shpFile, shxFile);
-  assert.equal(reader.shapeType, expectedType);
-  assert.strictEqual(reader.recordCount, expectedGeomCount, 'Unexpected number of records');
+  expect(reader.shapeType).toBe(expectedType);
+  expect(reader.recordCount, 'Unexpected number of records').toBe(expectedGeomCount);
   return reader;
 };
 
@@ -43,10 +43,10 @@ export interface xyzm extends xym {
 }
 
 export const assertCoordsXY = (coords: Array<Coordinate>, xy: Array<xy>) => {
-  assert.equal(coords.length, xy.length, 'Unexpected number of vertices');
+  expect(coords.length, 'Unexpected number of vertices').toBe(xy.length);
   for (let i = 0; i < coords.length; i++) {
-    assert.closeTo(coords[i].x, xy[i].x, tolerance, `Point ${i}.x is wrong`);
-    assert.closeTo(coords[i].y, xy[i].y, tolerance, `Point ${i}.y is wrong`);
+    expect(coords[i].x, `Point ${i}.x is wrong`).toBeCloseTo(xy[i].x, 7);
+    expect(coords[i].y, `Point ${i}.y is wrong`).toBeCloseTo(xy[i].y, 7);
   }
 };
 
@@ -60,6 +60,6 @@ export const assertCoordsXYM = (coords: Array<Coordinate>, xym: Array<xym>) => {
 export const assertCoordsXYZM = (coords: Array<Coordinate>, xyzm: Array<xyzm>) => {
   assertCoordsXYM(coords, xyzm);
   for (let i = 0; i < coords.length; i++) {
-    assert.closeTo(coords[i].z, xyzm[i].z, tolerance, `Point ${i}.z is wrong`);
+    expect(coords[i].z, `Point ${i}.z is wrong`).toBeCloseTo(xyzm[i].z, 7);
   }
 };

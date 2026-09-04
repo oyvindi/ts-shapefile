@@ -21,31 +21,26 @@
     "types": "dist/index.d.cts"
   },
   "devDependencies": {
+    "@placemarkio/check-geojson": "^0.1.14",
     "@rolldown/plugin-node-polyfills": "^1.0.3",
-    "@types/chai": "^4.2.14",
-    "@types/mocha": "^8.2.0",
     "@types/node": "^26.4.1",
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
     "buffer": "^6.0.3",
-    "chai": "^4.2.0",
-    "cross-env": "^7.0.3",
     "eslint": "^7.21.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-promise": "^4.3.1",
-    "geojsonhint": "^2.0.0",
-    "mocha": "^8.2.1",
     "prettier": "^2.2.1",
     "tsdown": "^0.23.0-rc.1",
-    "tsx": "^4.23.13",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
   },
   "scripts": {
     "build": "tsdown",
-    "test": "cross-env TSX_TSCONFIG_PATH=\"tsconfig.tests.json\"  mocha"
+    "test": "vitest run"
   },
   "dependencies": {
     "iconv-lite": "^0.6.2"

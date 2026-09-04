@@ -1,24 +1,23 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ShapeType } from '../src/shp/geom/geometry';
 import { ShpPolygon, ShpPolygonType } from '../src/shp/geom/polygon';
 import { assertCoordsXY, assertCoordsXYM, assertCoordsXYZM, createAndVerifyReader } from './util/shapeTestUtils';
 
 const assertPolygon = (pl: ShpPolygon, index: number, expectedType: ShpPolygonType, expextedParts: number) => {
-  assert.equal(pl.parts.length, expextedParts, `Unexpected number of parts in polygon ${index}`);
-  assert.equal(pl.type, expectedType);
+  expect(pl.parts.length, `Unexpected number of parts in polygon ${index}`).toBe(expextedParts);
+  expect(pl.type).toBe(expectedType);
   switch (expectedType) {
     case ShapeType.Polygon:
-      assert.isFalse(pl.hasZ);
-      assert.isFalse(pl.hasM);
+      expect(pl.hasZ).toBe(false);
+      expect(pl.hasM).toBe(false);
       break;
     case ShapeType.PolygonZ:
-      assert.isTrue(pl.hasZ);
-      assert.isTrue(pl.hasM);
+      expect(pl.hasZ).toBe(true);
+      expect(pl.hasM).toBe(true);
       break;
     case ShapeType.PolygonM:
-      assert.isFalse(pl.hasZ);
-      assert.isTrue(pl.hasM);
+      expect(pl.hasZ).toBe(false);
+      expect(pl.hasM).toBe(true);
       break;
   }
 };
@@ -33,7 +32,7 @@ describe('ShapeReader Polygons', () => {
           case 0:
             // Polygon with 2 holes
             assertPolygon(geom, i, ShapeType.Polygon, 1);
-            assert.equal(2, geom.parts[0].interiorRings.length);
+            expect(geom.parts[0].interiorRings.length).toBe(2);
             assertCoordsXY(geom.parts[0].exteriorRing.coords, [
               { x: 100, y: 60 },
               { x: 100, y: -40 },
@@ -59,7 +58,7 @@ describe('ShapeReader Polygons', () => {
 
           case 1:
             assertPolygon(geom, i, ShapeType.Polygon, 1);
-            assert.equal(0, geom.parts[0].interiorRings.length);
+            expect(geom.parts[0].interiorRings.length).toBe(0);
             assertCoordsXY(geom.parts[0].exteriorRing.coords, [
               { x: -190, y: 55 },
               { x: -170, y: 55 },
@@ -72,9 +71,9 @@ describe('ShapeReader Polygons', () => {
           case 2:
             // Multipolygon with holes in some islands
             assertPolygon(geom, i, ShapeType.Polygon, 3);
-            assert.equal(2, geom.parts[0].interiorRings.length);
-            assert.equal(0, geom.parts[1].interiorRings.length);
-            assert.equal(1, geom.parts[2].interiorRings.length);
+            expect(geom.parts[0].interiorRings.length).toBe(2);
+            expect(geom.parts[1].interiorRings.length).toBe(0);
+            expect(geom.parts[2].interiorRings.length).toBe(1);
 
             // Poly 1, exterior
             assertCoordsXY(geom.parts[0].exteriorRing.coords, [
@@ -139,8 +138,8 @@ describe('ShapeReader Polygons', () => {
         switch (i) {
           case 0:
             // Single poly, no holes
-            assert.equal(geom.parts.length, 1);
-            assert.equal(geom.parts[0].interiorRings.length, 0);
+            expect(geom.parts.length).toBe(1);
+            expect(geom.parts[0].interiorRings.length).toBe(0);
             assertCoordsXYM(geom.parts[0].exteriorRing.coords, [
               { x: -70, y: -115, m: 40 },
               { x: -44, y: -115, m: 50 },
@@ -151,10 +150,10 @@ describe('ShapeReader Polygons', () => {
 
           case 1:
             // Multipoly with 3 islands, last one with 3 holes
-            assert.equal(geom.parts.length, 3);
-            assert.equal(geom.parts[0].interiorRings.length, 0);
-            assert.equal(geom.parts[1].interiorRings.length, 0);
-            assert.equal(geom.parts[2].interiorRings.length, 3);
+            expect(geom.parts.length).toBe(3);
+            expect(geom.parts[0].interiorRings.length).toBe(0);
+            expect(geom.parts[1].interiorRings.length).toBe(0);
+            expect(geom.parts[2].interiorRings.length).toBe(3);
             assertCoordsXYM(geom.parts[0].exteriorRing.coords, [
               { x: 34.44082552002709, y: -157.7606773230082, m: 5 },
               { x: 23.31626238756462, y: -165.56738829315734, m: 6 },
@@ -214,8 +213,8 @@ describe('ShapeReader Polygons', () => {
         switch (i) {
           case 0:
             // simple polygon, no holes
-            assert.equal(geom.parts.length, 1);
-            assert.equal(geom.parts[0].interiorRings.length, 0);
+            expect(geom.parts.length).toBe(1);
+            expect(geom.parts[0].interiorRings.length).toBe(0);
             assertCoordsXYZM(geom.parts[0].exteriorRing.coords, [
               { x: 32, y: -86, z: 10, m: 1 },
               { x: 46, y: -86, z: 20, m: NaN },
@@ -225,10 +224,10 @@ describe('ShapeReader Polygons', () => {
             ]);
             break;
           case 1:
-            assert.equal(geom.parts.length, 3);
-            assert.equal(geom.parts[0].interiorRings.length, 3);
-            assert.equal(geom.parts[1].interiorRings.length, 0);
-            assert.equal(geom.parts[2].interiorRings.length, 0);
+            expect(geom.parts.length).toBe(3);
+            expect(geom.parts[0].interiorRings.length).toBe(3);
+            expect(geom.parts[1].interiorRings.length).toBe(0);
+            expect(geom.parts[2].interiorRings.length).toBe(0);
 
             // Polygon 1 exterior
             assertCoordsXYZM(geom.parts[0].exteriorRing.coords, [

@@ -1,23 +1,22 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ShapeType } from '../src/shp/geom/geometry';
 import { ShpMultiPoint, ShpMultiPointType } from '../src/shp/geom/multiPoint';
 import { assertCoordsXY, assertCoordsXYM, assertCoordsXYZM, createAndVerifyReader } from './util/shapeTestUtils';
 
 const assertMultiPoint = (pl: ShpMultiPoint, expectedType: ShpMultiPointType) => {
-  assert.equal(pl.type, expectedType);
+  expect(pl.type).toBe(expectedType);
   switch (expectedType) {
     case ShapeType.MultiPoint:
-      assert.isFalse(pl.hasZ);
-      assert.isFalse(pl.hasM);
+      expect(pl.hasZ).toBe(false);
+      expect(pl.hasM).toBe(false);
       break;
     case ShapeType.MultiPointZ:
-      assert.isTrue(pl.hasZ);
-      assert.isTrue(pl.hasM);
+      expect(pl.hasZ).toBe(true);
+      expect(pl.hasM).toBe(true);
       break;
     case ShapeType.MultiPointM:
-      assert.isFalse(pl.hasZ);
-      assert.isTrue(pl.hasM);
+      expect(pl.hasZ).toBe(false);
+      expect(pl.hasM).toBe(true);
       break;
   }
 };

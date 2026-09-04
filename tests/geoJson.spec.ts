@@ -1,30 +1,29 @@
-import { describe, it } from 'mocha';
+import { describe, it, expect } from 'vitest';
 import { geoJsonAssert } from './util/geoJsonAssert';
 import { ShapeType } from '../src/shp/geom/geometry';
 import { createAndVerifyReader } from './util/shapeTestUtils';
-import { assert } from 'chai';
 import { GeoJsonCoord, GeoJsonCoordinateSequence, GeoJsonLineString, GeoJsonMultiPoint, GeoJsonMultiPolygon, GeoJsonPoint, GeoJsonPolygon } from '../src/shp/geom/geoJson';
 
 const tolerance = 0.000000001;
 
 const assertPointsEqual = (p1: GeoJsonCoord, p2: GeoJsonCoord) => {
-  assert.closeTo(p1[0], p2[0], tolerance);
-  assert.closeTo(p1[1], p2[1], tolerance);
+  expect(p1[0]).toBeCloseTo(p2[0], 9);
+  expect(p1[1]).toBeCloseTo(p2[1], 9);
   if (p1.length === 3 && p2.length === 3) {
-    assert.closeTo(p1[2], p2[2], tolerance);
+    expect(p1[2]).toBeCloseTo(p2[2], 9);
   }
 };
 
 const assertPolyRingIsSane = (coords: GeoJsonCoordinateSequence, expectedCount: number) => {
-  assert.equal(expectedCount, coords.length);
+  expect(coords.length).toBe(expectedCount);
   assertPointsEqual(coords[0], coords[coords.length - 1]);
 };
 
 type CoordDim = 2 | 3;
 
 const coordSequenceStringSane = (coords:GeoJsonCoordinateSequence, expectedCoordCount: number, coordDim : CoordDim) => {
-  assert.equal(expectedCoordCount, coords.length);
-  coords.forEach((p) => assert.equal(coordDim, p.length));
+  expect(coords.length).toBe(expectedCoordCount);
+  coords.forEach((p) => expect(p.length).toBe(coordDim));
 };
 
 describe('GeoJSON serializing', () => {
@@ -32,9 +31,9 @@ describe('GeoJSON serializing', () => {
     it('', async () => {
       const reader = await createAndVerifyReader('point.shp', 'point.shx', ShapeType.Point, 7);
       const point = reader.readGeom(0).toGeoJson() as GeoJsonPoint;
-      assert.equal('Point', point.type);
+      expect(point.type).toBe('Point');
       geoJsonAssert(point);
-      assert.equal(2, point.coordinates.length);
+      expect(point.coordinates.length).toBe(2);
     });
   });
 
@@ -42,9 +41,9 @@ describe('GeoJSON serializing', () => {
     it('', async () => {
       const reader = await createAndVerifyReader('pointM.shp', 'pointM.shx', ShapeType.PointM, 5);
       const point = reader.readGeom(0).toGeoJson() as GeoJsonPoint;
-      assert.equal('Point', point.type);
+      expect(point.type).toBe('Point');
       geoJsonAssert(point);
-      assert.equal(2, point.coordinates.length);
+      expect(point.coordinates.length).toBe(2);
     });
   });
 
@@ -52,9 +51,9 @@ describe('GeoJSON serializing', () => {
     it('', async () => {
       const reader = await createAndVerifyReader('pointZM.shp', 'pointZM.shx', ShapeType.PointZ, 6);
       const point = reader.readGeom(0).toGeoJson() as GeoJsonPoint;
-      assert.equal('Point', point.type);
+      expect(point.type).toBe('Point');
       geoJsonAssert(point);
-      assert.equal(3, point.coordinates.length);
+      expect(point.coordinates.length).toBe(3);
     });
   });
 
@@ -63,7 +62,7 @@ describe('GeoJSON serializing', () => {
       const reader = await createAndVerifyReader('multipoint.shp', 'multipoint.shx', ShapeType.MultiPoint, 3);
       const mp1 = reader.readGeom(0).toGeoJson() as GeoJsonMultiPoint;
       geoJsonAssert(mp1);
-      assert.equal('MultiPoint', mp1.type);
+      expect(mp1.type).toBe('MultiPoint');
       coordSequenceStringSane(mp1.coordinates, 5, 2);
       geoJsonAssert(reader.readGeom(1).toGeoJson());
       geoJsonAssert(reader.readGeom(2).toGeoJson());
@@ -74,7 +73,7 @@ describe('GeoJSON serializing', () => {
     it('', async () => {
       const reader = await createAndVerifyReader('multipointM.shp', 'multipointM.shx', ShapeType.MultiPointM, 3);
       const mp1 = reader.readGeom(0).toGeoJson() as GeoJsonMultiPoint;
-      assert.equal('MultiPoint', mp1.type);
+      expect(mp1.type).toBe('MultiPoint');
       coordSequenceStringSane(mp1.coordinates, 5, 2);
       geoJsonAssert(mp1);
       geoJsonAssert(reader.readGeom(1).toGeoJson());
@@ -87,7 +86,7 @@ describe('GeoJSON serializing', () => {
       const reader = await createAndVerifyReader('multipointZM.shp', 'multipointZM.shx', ShapeType.MultiPointZ, 3);
       const mp1 = reader.readGeom(0).toGeoJson() as GeoJsonMultiPoint;
       geoJsonAssert(mp1);
-      assert.equal('MultiPoint', mp1.type);
+      expect(mp1.type).toBe('MultiPoint');
       coordSequenceStringSane(mp1.coordinates, 6, 3);
       geoJsonAssert(reader.readGeom(1).toGeoJson());
       geoJsonAssert(reader.readGeom(2).toGeoJson());
@@ -99,7 +98,7 @@ describe('GeoJSON serializing', () => {
       const reader = await createAndVerifyReader('polyline.shp', 'polyline.shx', ShapeType.PolyLine, 3);
       const pl1 = reader.readGeom(0).toGeoJson() as GeoJsonLineString;
       geoJsonAssert(pl1);
-      assert.equal('LineString', pl1.type);
+      expect(pl1.type).toBe('LineString');
       coordSequenceStringSane(pl1.coordinates, 3, 2);
       geoJsonAssert(reader.readGeom(1).toGeoJson());
       geoJsonAssert(reader.readGeom(2).toGeoJson());
@@ -111,7 +110,7 @@ describe('GeoJSON serializing', () => {
       const reader = await createAndVerifyReader('polylineM.shp', 'polylineM.shx', ShapeType.PolyLineM, 3);
       const pl1 = reader.readGeom(0).toGeoJson() as GeoJsonLineString;
       geoJsonAssert(pl1);
-      assert.equal('LineString', pl1.type);
+      expect(pl1.type).toBe('LineString');
       coordSequenceStringSane(pl1.coordinates, 3, 2);
       geoJsonAssert(reader.readGeom(1).toGeoJson());
       geoJsonAssert(reader.readGeom(2).toGeoJson());
@@ -123,7 +122,7 @@ describe('GeoJSON serializing', () => {
       const reader = await createAndVerifyReader('polylineZM.shp', 'polylineZM.shx', ShapeType.PolyLineZ, 3);
       const pl1 = reader.readGeom(0).toGeoJson() as GeoJsonLineString;
       geoJsonAssert(pl1);
-      assert.equal('LineString', pl1.type);
+      expect(pl1.type).toBe('LineString');
       coordSequenceStringSane(pl1.coordinates, 5, 3);
       geoJsonAssert(reader.readGeom(1).toGeoJson());
       geoJsonAssert(reader.readGeom(2).toGeoJson());
@@ -136,8 +135,8 @@ describe('GeoJSON serializing', () => {
 
       const poly = reader.readGeom(0).toGeoJson() as GeoJsonPolygon;
       geoJsonAssert(poly);
-      assert.equal('Polygon', poly.type);
-      assert.equal(3, poly.coordinates.length); // Exterior + 2 interiors
+      expect(poly.type).toBe('Polygon');
+      expect(poly.coordinates.length).toBe(3); // Exterior + 2 interiors
       assertPolyRingIsSane(poly.coordinates[0], 5);
       assertPolyRingIsSane(poly.coordinates[1], 5);
       assertPolyRingIsSane(poly.coordinates[2], 5);
@@ -146,26 +145,24 @@ describe('GeoJSON serializing', () => {
       // Geometry 3 is a multipolygon, with holes in some islands
 
       const multiPoly = reader.readGeom(2).toGeoJson() as GeoJsonMultiPolygon;
-      // NOTE: The current version of geojsonhint has a bug in polygon orientation checks, wait for new version
-      // geoJsonAssert(multiPoly);
-      console.log(JSON.stringify(multiPoly));
+      geoJsonAssert(multiPoly);
 
-      assert.equal(multiPoly.type, 'MultiPolygon');
-      assert.exists(multiPoly.coordinates);
-      assert.equal(3, multiPoly.coordinates.length); // 3 polygons
+      expect(multiPoly.type).toBe('MultiPolygon');
+      expect(multiPoly.coordinates).toBeDefined();
+      expect(multiPoly.coordinates.length).toBe(3); // 3 polygons
 
       const poly1 = multiPoly.coordinates[0];
-      assert.equal(3, poly1.length);
+      expect(poly1.length).toBe(3);
       assertPolyRingIsSane(poly1[0], 6);
       assertPolyRingIsSane(poly1[1], 5);
       assertPolyRingIsSane(poly1[2], 4);
 
       const poly2 = multiPoly.coordinates[1];
-      assert.equal(1, poly2.length);
+      expect(poly2.length).toBe(1);
       assertPolyRingIsSane(poly2[0], 4);
 
       const poly3 = multiPoly.coordinates[2];
-      assert.equal(2, poly3.length);
+      expect(poly3.length).toBe(2);
       assertPolyRingIsSane(poly3[0], 5);
       assertPolyRingIsSane(poly3[1], 5);
     });
@@ -173,21 +170,17 @@ describe('GeoJSON serializing', () => {
 
   describe('GeoJSON from PolygonM', () => {
     it('', async () => {
-      // eslint-disable-next-line no-unused-vars
       const reader = await createAndVerifyReader('polygonM.shp', 'polygonM.shx', ShapeType.PolygonM, 2);
-      // NOTE: The current version of geojsonhint has a bug in polygon orientation checks, wait for new version
-      // geoJsonAssert(reader.readGeom(0).toGeoJson());
-      // geoJsonAssert(reader.readGeom(1).toGeoJson());
+      geoJsonAssert(reader.readGeom(0).toGeoJson());
+      geoJsonAssert(reader.readGeom(1).toGeoJson());
     });
   });
 
   describe('GeoJSON from PolygonZM', () => {
     it('', async () => {
-      // eslint-disable-next-line no-unused-vars
       const reader = await createAndVerifyReader('polygonZM.shp', 'polygonZM.shx', ShapeType.PolygonZ, 2);
-      // NOTE: The current version of geojsonhint has a bug in polygon orientation checks, wait for new version
-      //   geoJsonAssert(reader.readGeom(0).toGeoJson());
-      //   geoJsonAssert(reader.readGeom(1).toGeoJson());
+      geoJsonAssert(reader.readGeom(0).toGeoJson());
+      geoJsonAssert(reader.readGeom(1).toGeoJson());
     });
   });
 });

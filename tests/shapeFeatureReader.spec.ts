@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { openTestFile, assertThrows } from './util/testUtils';
 import { ShapeFeatureReader } from '../src/shapeFeatureReader';
 import { ShapeType } from '../src/shp/geom/geometry';
@@ -14,19 +13,19 @@ describe('ShapeFeatureReader', () => {
       const dbf = await openTestFile('featureclass.dbf');
       const cpg = await openTestFile('featureclass.cpg');
       const reader = await ShapeFeatureReader.fromFiles(shp, shx, dbf, cpg);
-      assert.equal(reader.featureCount, 7);
-      assert.equal(2, reader.fields.length);
-      assert.equal(reader.fields[0].name, 'Id');
-      assert.equal(reader.fields[1].name, 'name');
+      expect(reader.featureCount).toBe(7);
+      expect(reader.fields.length).toBe(2);
+      expect(reader.fields[0].name).toBe('Id');
+      expect(reader.fields[1].name).toBe('name');
 
       const feature = reader.readFeature(1);
-      assert.isNotNull(feature.geom);
-      assert.isNotNull(feature.attrs);
+      expect(feature.geom).not.toBeNull();
+      expect(feature.attrs).not.toBeNull();
 
       // Verify geometry
-      assert.equal(ShapeType.PolyLine, feature.geom.type);
+      expect(feature.geom.type).toBe(ShapeType.PolyLine);
       const polyLine = feature.geom as ShpPolyLine;
-      assert.equal(polyLine.parts.length, 1);
+      expect(polyLine.parts.length).toBe(1);
       assertCoordsXY(polyLine.parts[0].coords, [
         { x: -117.3470458984375, y: -40.57794189453125 },
         { x: -93.57977294921875, y: -42.8712158203125 },
@@ -36,9 +35,9 @@ describe('ShapeFeatureReader', () => {
       ]);
 
       // Verify attributes
-      assert.equal(2, feature.attrs.length);
-      assert.equal(feature.attrs[0], 0);
-      assert.equal(feature.attrs[1], 'feature 1');
+      expect(feature.attrs.length).toBe(2);
+      expect(feature.attrs[0]).toBe(0);
+      expect(feature.attrs[1]).toBe('feature 1');
     });
   });
 
@@ -50,15 +49,15 @@ describe('ShapeFeatureReader', () => {
       const cpg = await openTestFile('featureclass.cpg');
       const reader = await ShapeFeatureReader.fromFiles(shp, shx, dbf, cpg);
       const collection = await reader.readFeatureCollection();
-      assert.equal(collection.features.length, 7);
-      assert.equal(2, collection.fields.length);
+      expect(collection.features.length).toBe(7);
+      expect(collection.fields.length).toBe(2);
       collection.features.forEach((feature) => {
-        assert.isNotNull(feature.geom);
-        assert.isNotNull(feature.attrs);
-        assert.equal(feature.attrs.length, 2);
-        assert.isNumber(feature.attrs[0]);
-        assert.isString(feature.attrs[1]);
-        assert.equal(feature.geom.type, ShapeType.PolyLine);
+        expect(feature.geom).not.toBeNull();
+        expect(feature.attrs).not.toBeNull();
+        expect(feature.attrs.length).toBe(2);
+        expect(typeof feature.attrs[0]).toBe('number');
+        expect(typeof feature.attrs[1]).toBe('string');
+        expect(feature.geom.type).toBe(ShapeType.PolyLine);
       });
     });
   });

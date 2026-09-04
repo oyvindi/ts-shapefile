@@ -1,22 +1,21 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ShapeType } from '../src/shp/geom/geometry';
 import { ShpPoint, ShpPointType } from '../src/shp/geom/point';
 import { assertValueOrNan, createAndVerifyReader, tolerance } from './util/shapeTestUtils';
 
 const assertPoint = (p: ShpPoint, expectedX: number, expectedY: number, expectedType: ShpPointType) => {
-  assert.closeTo(p.x, expectedX, tolerance, 'Wrong X ordinate');
-  assert.closeTo(p.y, expectedY, tolerance, 'Wrong Y ordinate');
-  assert.equal(p.type, expectedType);
+  expect(p.x, 'Wrong X ordinate').toBeCloseTo(expectedX, 7);
+  expect(p.y, 'Wrong Y ordinate').toBeCloseTo(expectedY, 7);
+  expect(p.type).toBe(expectedType);
   if (expectedType === ShapeType.Point || expectedType === ShapeType.PointM) {
-    assert.isFalse(p.hasZ);
-    assert.isNaN(p.z);
+    expect(p.hasZ).toBe(false);
+    expect(p.z).toBeNaN();
   } else {
-    assert.isTrue(p.hasZ);
+    expect(p.hasZ).toBe(true);
   }
   if (expectedType === ShapeType.Point) {
-    assert.isNaN(p.m);
-    assert.isFalse(p.hasM);
+    expect(p.m).toBeNaN();
+    expect(p.hasM).toBe(false);
   }
 };
 

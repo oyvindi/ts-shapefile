@@ -1,24 +1,23 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ShapeType } from '../src/shp/geom/geometry';
 import { ShpPolyLine, ShpPolylineType } from '../src/shp/geom/polyLine';
 import { assertCoordsXY, assertCoordsXYM, assertCoordsXYZM, createAndVerifyReader } from './util/shapeTestUtils';
 
 const assertPolyLine = (pl: ShpPolyLine, index: number, expectedType: ShpPolylineType, expextedParts: number) => {
-  assert.equal(pl.parts.length, expextedParts, `Unexpected number of parts in polyline ${index}`);
-  assert.equal(pl.type, expectedType);
+  expect(pl.parts.length, `Unexpected number of parts in polyline ${index}`).toBe(expextedParts);
+  expect(pl.type).toBe(expectedType);
   switch (expectedType) {
     case ShapeType.PolyLine:
-      assert.isFalse(pl.hasZ);
-      assert.isFalse(pl.hasM);
+      expect(pl.hasZ).toBe(false);
+      expect(pl.hasM).toBe(false);
       break;
     case ShapeType.PolyLineZ:
-      assert.isTrue(pl.hasZ);
-      assert.isTrue(pl.hasM);
+      expect(pl.hasZ).toBe(true);
+      expect(pl.hasM).toBe(true);
       break;
     case ShapeType.PolyLineM:
-      assert.isFalse(pl.hasZ);
-      assert.isTrue(pl.hasM);
+      expect(pl.hasZ).toBe(false);
+      expect(pl.hasM).toBe(true);
       break;
   }
 };
@@ -29,8 +28,8 @@ describe('ShapeReader Polylines', () => {
       const reader = await createAndVerifyReader('polyline.shp', 'polyline.shx', ShapeType.PolyLine, 3);
       for (let i = 0; i < reader.recordCount; i++) {
         const geom = reader.readGeom(i) as ShpPolyLine;
-        assert.isFalse(geom.hasZ);
-        assert.isFalse(geom.hasM);
+        expect(geom.hasZ).toBe(false);
+        expect(geom.hasM).toBe(false);
         // console.log(JSON.stringify(geom.toGeoJson()));
         switch (i) {
           case 0:
@@ -73,8 +72,8 @@ describe('ShapeReader Polylines', () => {
       const reader = await createAndVerifyReader('polylineM.shp', 'polylineM.shx', ShapeType.PolyLineM, 3);
       for (let i = 0; i < reader.recordCount; i++) {
         const geom = reader.readGeom(i) as ShpPolyLine;
-        assert.isFalse(geom.hasZ);
-        assert.isTrue(geom.hasM);
+        expect(geom.hasZ).toBe(false);
+        expect(geom.hasM).toBe(true);
 
         // console.log(" \n" + JSON.stringify(geom.toGeoJson()));
         switch (i) {
@@ -124,8 +123,8 @@ describe('ShapeReader Polylines', () => {
       const reader = await createAndVerifyReader('polylineZM.shp', 'polylineZM.shx', ShapeType.PolyLineZ, 3);
       for (let i = 0; i < reader.recordCount; i++) {
         const geom = reader.readGeom(i) as ShpPolyLine;
-        assert.isTrue(geom.hasZ);
-        assert.isTrue(geom.hasM);
+        expect(geom.hasZ).toBe(true);
+        expect(geom.hasM).toBe(true);
         // console.log(" \n" + JSON.stringify(geom.toGeoJson()));
         switch (i) {
           case 0:
