@@ -1,11 +1,11 @@
 import { Coordinate } from './coordinate';
 import { ShpGeometryBase, ShapeType } from './geometry';
-import { Geometry, Position, LineString, MultiLineString } from './geoJson';
+import { Geometry, Position, LineString as GeoJsonLineString, MultiLineString } from './geoJson';
 
 export class LineString {
   readonly coords: Array<Coordinate> = [];
 
-  public toJson(): Coordinate[] {
+  public toJson(): number[][] {
     return this.coords.map((coord) => coord.toJson());
   }
 
@@ -26,7 +26,7 @@ export class ShpPolyLine extends ShpGeometryBase {
 
   public toGeoJson(): Geometry {
     if (this.parts.length < 2) {
-      return <LineString>{
+      return <GeoJsonLineString>{
         type: 'LineString',
         coordinates: this.parts[0].toGeoJson()
       };
