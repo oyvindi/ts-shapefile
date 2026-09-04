@@ -22,9 +22,7 @@ export class MemoryStream {
 
   private _ensureBytes(byteCount: number): void {
     if (this._offset + byteCount > this._size) {
-      throw new Error(
-        `Read of ${byteCount} bytes at offset ${this._offset} exceeds buffer size ${this._size}`
-      );
+      throw new Error(`Read of ${byteCount} bytes at offset ${this._offset} exceeds buffer size ${this._size}`);
     }
   }
 

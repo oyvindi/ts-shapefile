@@ -63,7 +63,9 @@ export class ShpPolygonPart {
     // GeoJSON follows the "right hand rule", where exterior rings are
     // counter-clockwise, and interiors clockwise. Therefore we reverse() them.
     res.push(this.exteriorRing.toGeoJson());
-    this.interiorRings.forEach((ring) => res.push(ring.toGeoJson()));
+    for (const ring of this.interiorRings) {
+      res.push(ring.toGeoJson());
+    }
     return res;
   }
 
@@ -89,6 +91,12 @@ export class ShpPolygon extends ShpGeometryBase {
       return <MultiPolygon>{
         type: 'MultiPolygon',
         coordinates: this.parts.map((part) => part.toJson())
+      };
+    }
+    if (this.parts.length === 0) {
+      return <Polygon>{
+        type: 'Polygon',
+        coordinates: []
       };
     }
     return <Polygon>{

@@ -24,15 +24,15 @@ export class ShapeReader {
   readonly hasM: boolean;
 
   public get extent(): BoundingBox {
-    return this._shpHeader!.extent;
+    return this._shpHeader.extent;
   }
 
   public get shapeType(): ShapeType {
-    return this._shpHeader!.type;
+    return this._shpHeader.type;
   }
 
   public get shpHeader(): ShpHeader {
-    return this._shpHeader!;
+    return this._shpHeader;
   }
 
   private constructor(shp: ArrayBuffer, shx: ArrayBuffer) {
@@ -83,24 +83,29 @@ export class ShapeReader {
 
     const fileLen = stream.seek(24).readInt32();
     const shpType = stream.seek(32).readInt32(true);
+    if (!GeomUtil.isShapeType(shpType)) {
+      throw new Error(`Unknown shape type: ${shpType}`);
+    }
     stream.seek(36);
     const extent = this._readBbox(stream);
-    const result = {
-      type: shpType as ShapeType,
+    return {
+      type: shpType,
       fileLength: fileLen * 2,
       extent: extent
     };
-    return result;
   }
 
   private _readGeomHeader(): GeomHeader {
     const recNum = this._shpStream.readInt32(false);
     const len = this._shpStream.readInt32(false);
-    const type: ShapeType = this._shpStream.readInt32(true) as ShapeType;
+    const typeNum = this._shpStream.readInt32(true);
+    if (!GeomUtil.isShapeType(typeNum)) {
+      throw new Error(`Unknown shape type: ${typeNum}`);
+    }
     return {
       length: len,
       recordNum: recNum,
-      type: type
+      type: typeNum
     };
   }
 
@@ -134,7 +139,7 @@ export class ShapeReader {
     };
   }
 
-  private _checkMeasureNaN(m: number) {
+  private _checkMeasureNaN(m: number): number {
     if (m < mNaN) {
       return NaN;
     }
@@ -301,28 +306,28 @@ export class ShapeReader {
     const poly = new ShpPolygon(header.type as ShpPolygonType);
 
     /* Create parts from exterior rings (clockwise), and sort out holes (counter-clockwise)  */
-    const holes: Array<LinerarRing> = [];
-    rings.forEach((ring) => {
+    const holes: LinerarRing[] = [];
+    for (const ring of rings) {
       if (ring.isClockWise()) {
         const polyPart = new ShpPolygonPart(ring);
         poly.parts.push(polyPart);
       } else {
         holes.push(ring);
       }
-    });
+    }
     /* Find which exterior rings that contain the holes, and add them to the respective part  */
-    holes.forEach((hole) => {
+    for (const hole of holes) {
       let found = false;
-      poly.parts.forEach((part) => {
+      for (const part of poly.parts) {
         if (part.exteriorRing.contains(hole)) {
           part.interiorRings.push(hole);
           found = true;
         }
-      });
+      }
       if (!found) {
         throw new Error('Orphan polygon hole: no containing exterior ring found');
       }
-    });
+    }
     return poly;
   }
 }

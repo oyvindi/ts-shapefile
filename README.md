@@ -134,7 +134,7 @@ const reader = await ShapeFeatureReader.fromArrayBuffers(
   await findByExt('.shp'),
   await findByExt('.shx'),
   await findByExt('.dbf'),
-  await findByExt('.cpg')  // optional
+  await findByExt('.cpg') // optional
 );
 
 const collection = reader.readFeatureCollection();
@@ -163,7 +163,7 @@ const reader = await ShapeFeatureReader.fromArrayBuffers(
   await findByExt('.shp'),
   await findByExt('.shx'),
   await findByExt('.dbf'),
-  await findByExt('.cpg')  // optional
+  await findByExt('.cpg') // optional
 );
 
 const collection = reader.readFeatureCollection();

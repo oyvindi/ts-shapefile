@@ -18,8 +18,12 @@ export enum ShapeType {
 }
 
 export class GeomUtil {
+  public static isShapeType(value: number): value is ShapeType {
+    return value in ShapeType;
+  }
+
   public static pointType(shapeType: ShapeType): CoordType {
-    if (shapeType === 0) {
+    if (shapeType === ShapeType.Null) {
       return CoordType.NULL;
     } else if (shapeType < 10) {
       return CoordType.XY;

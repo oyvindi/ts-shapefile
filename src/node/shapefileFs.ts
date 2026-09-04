@@ -3,8 +3,7 @@ import { ShapeFeatureReader } from '../shapeFeatureReader';
 import { ShapeReader } from '../shp/shapeReader';
 import { DbfReader } from '../dbf/dbfReader';
 
-const swapExt = (filePath: string, ext: string): string =>
-  filePath.replace(/\.[^.]+$/, ext);
+const swapExt = (filePath: string, ext: string): string => filePath.replace(/\.[^.]+$/, ext);
 
 const readIfExists = async (p: string): Promise<ArrayBuffer | undefined> => {
   try {

@@ -49,11 +49,11 @@ export class CoordXY extends CoordinateBase {
   readonly x: number;
   readonly y: number;
 
-  get z() {
+  get z(): number {
     return NaN;
   }
 
-  get m() {
+  get m(): number {
     return NaN;
   }
 
@@ -72,7 +72,7 @@ export class CoordXYM extends CoordinateBase {
   readonly y: number;
   readonly m: number;
 
-  get z() {
+  get z(): number {
     return NaN;
   }
 

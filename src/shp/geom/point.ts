@@ -7,7 +7,7 @@ export type ShpPointType = ShapeType.Point | ShapeType.PointZ | ShapeType.PointM
 export class ShpPoint extends ShpGeometryBase {
   private _point: Coordinate;
 
-  public get x() {
+  public get x(): number {
     return this._point.x;
   }
 

@@ -9,7 +9,7 @@ export class ShapeFeatureReader {
   private _dbfReader?: DbfReader;
 
   public get featureCount(): number {
-    return this._shpReader!.recordCount;
+    return this._shpReader.recordCount;
   }
 
   public get fields(): Array<DbfFieldDescr> {
@@ -17,7 +17,7 @@ export class ShapeFeatureReader {
   }
 
   public get shpHeader(): ShpHeader {
-    return this._shpReader!.shpHeader;
+    return this._shpReader.shpHeader;
   }
 
   private constructor(shapeFile: ShapeReader, dbfReader?: DbfReader) {
@@ -69,7 +69,7 @@ export class ShapeFeatureReader {
     if (index < 0 || index > this.featureCount - 1) {
       throw new Error('Feature index out of range');
     }
-    const geom = this._shpReader!.readGeom(index);
+    const geom = this._shpReader.readGeom(index);
     let attrs: Array<unknown> = [];
     if (this._dbfReader != null) {
       attrs = this._dbfReader.readRecord(index);

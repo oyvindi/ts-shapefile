@@ -13,11 +13,6 @@ export interface ShpHeader {
   readonly fileLength: number;
 }
 
-export interface ShxRecord {
-  offset: number;
-  length: number;
-}
-
 export interface GeomHeader {
   recordNum: number;
   length: number;

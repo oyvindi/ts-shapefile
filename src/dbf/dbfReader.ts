@@ -119,7 +119,9 @@ export class DbfReader {
     }
     // Calc record size
     this._recordSize = 1; // Count "deleted" byte as well
-    this.fields.forEach((field) => (this._recordSize += field.fieldLen));
+    for (const field of this.fields) {
+      this._recordSize += field.fieldLen;
+    }
     s.readByte();
     this._recordStartOffset = s.tell;
     return {
@@ -136,11 +138,13 @@ export class DbfReader {
     const result: unknown[] = [];
     if (deletedFlag === 0x2a) {
       // Deleted record, fill with null
-      this._fields.forEach(() => result.push(null));
+      for (const _field of this._fields) {
+        result.push(null);
+      }
       return result;
     }
     offset += 1; // deleted flag
-    this._fields.forEach((field) => {
+    for (const field of this._fields) {
       this._stream.seek(offset);
       switch (field.type) {
         case 'C':
@@ -162,7 +166,7 @@ export class DbfReader {
           result.push(null);
       }
       offset += field.fieldLen;
-    });
+    }
     return result;
   }
 
