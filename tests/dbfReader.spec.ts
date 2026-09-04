@@ -41,7 +41,7 @@ describe('DbfReader', () => {
       expect(record[0]).toBeCloseTo(123.123, 7);
       expect(record[1]).toBeCloseTo(1.123456789, 7);
       expect(record[2]).toBe('Some text');
-      expect(record[3].getTime()).toBe(new Date(2021, 0, 15).getTime());
+      expect(record[3].getTime()).toBe(new Date(2020, 11, 15).getTime());
       expect(record[4]).toBe(55555555);
       expect(record[5]).toBe(44444);
 
@@ -118,7 +118,7 @@ describe('DbfReader', () => {
       expect(record[0]).toBeCloseTo(123.123, 7);
       expect(record[1]).toBeCloseTo(1.123456789, 7);
       expect(record[2]).toBe('Some text');
-      expect(record[3].getTime()).toBe(new Date(2021, 0, 15).getTime());
+      expect(record[3].getTime()).toBe(new Date(2020, 11, 15).getTime());
       expect(record[4]).toBe(55555555);
       expect(record[5]).toBe(44444);
 

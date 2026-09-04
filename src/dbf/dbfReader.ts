@@ -197,7 +197,7 @@ export class DbfReader {
     if (m == null) {
       return null;
     }
-    return new Date(+m[1], +m[2], +m[3]);
+    return new Date(+m[1], +m[2] - 1, +m[3]);
   }
 
   private _readLogicalValue(_field: DbfFieldDescr): boolean | null {
