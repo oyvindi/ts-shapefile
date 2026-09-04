@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { DbfReader } from '../src/dbf/dbfReader';
 import { DbfFieldDescr, DbfFieldType } from '../src/dbf/dbfTypes';
-import { openTestFile } from './util/testUtils';
+import { openTestFile, openTestBuffer } from './util/testUtils';
 
 const cpDir = 'dbf_codepage/';
 
@@ -95,6 +95,49 @@ describe('DbfReader', () => {
       expect(reader.recordCount).toBe(3);
       const row = reader.readRecord(2);
       expect(row[1]).toBe('ÆØÅæøå');
+    });
+  });
+
+  describe('DBF fromArrayBuffer (UTF-8 with CPG)', () => {
+    it('should produce the same result via raw ArrayBuffer input', async () => {
+      const cpgBuf = await openTestBuffer('attr_types.CPG');
+      const dbfBuf = await openTestBuffer('attr_types.dbf');
+      const reader = await DbfReader.fromArrayBuffer(dbfBuf, cpgBuf);
+      const fields = reader.fields;
+      expect(fields.length).toBe(6);
+      expect(reader.encoding).toBe('utf8');
+
+      assertField(fields[0], 'float', 'F', 'Float', 13, 11);
+      assertField(fields[1], 'double', 'F', 'Float', 19, 11);
+      assertField(fields[2], 'text', 'C', 'Character', 50, 0);
+      assertField(fields[3], 'date', 'D', 'Date', 8, 0);
+      assertField(fields[4], 'long', 'N', 'Number', 10, 0);
+      assertField(fields[5], 'short', 'N', 'Number', 5, 0);
+
+      let record = reader.readRecord(0);
+      expect(record[0]).toBeCloseTo(123.123, 7);
+      expect(record[1]).toBeCloseTo(1.123456789, 7);
+      expect(record[2]).toBe('Some text');
+      expect(record[3].getTime()).toBe(new Date(2021, 0, 15).getTime());
+      expect(record[4]).toBe(55555555);
+      expect(record[5]).toBe(44444);
+
+      record = reader.readRecord(1);
+      expect(record[2]).toBe('Norwegian ÆØÅ');
+      record = reader.readRecord(2);
+      expect(record[2]).toBe('German ÄÖÜẞ');
+    });
+  });
+
+  describe('DBF fromArrayBuffer (codepage from header)', () => {
+    it('should resolve encoding from DBF header when no CPG is provided', async () => {
+      const dbfBuf = await openTestBuffer(`${cpDir}cp865.dbf`);
+      const reader = await DbfReader.fromArrayBuffer(dbfBuf);
+      expect(reader.fields.length).toBe(2);
+      expect(reader.recordCount).toBe(3);
+      expect(reader.encoding).toBe('cp865');
+      const row = reader.readRecord(2);
+      expect(row[1]).toBe('æøåÆØÅ');
     });
   });
 });

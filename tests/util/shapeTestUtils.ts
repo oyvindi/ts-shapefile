@@ -2,7 +2,7 @@ import { expect } from 'vitest';
 import { ShapeReader } from '../../src/shp/shapeReader';
 import { ShapeType } from '../../src/shp/geom/geometry';
 
-import { openTestFile } from '../util/testUtils';
+import { openTestFile, openTestBuffer } from '../util/testUtils';
 import { Coordinate } from '../../src/shp/geom/coordinate';
 
 export const tolerance: number = 0.0000001;
@@ -24,6 +24,20 @@ export const createAndVerifyReader = async (
   const shpFile = await openTestFile(shpFileName);
   const shxFile = await openTestFile(shxFileName);
   const reader = await ShapeReader.fromFile(shpFile, shxFile);
+  expect(reader.shapeType).toBe(expectedType);
+  expect(reader.recordCount, 'Unexpected number of records').toBe(expectedGeomCount);
+  return reader;
+};
+
+export const createAndVerifyReaderFromBuffer = async (
+  shpFileName: string,
+  shxFileName: string,
+  expectedType: ShapeType,
+  expectedGeomCount: number
+): Promise<ShapeReader> => {
+  const shp = await openTestBuffer(shpFileName);
+  const shx = await openTestBuffer(shxFileName);
+  const reader = await ShapeReader.fromArrayBuffer(shp, shx);
   expect(reader.shapeType).toBe(expectedType);
   expect(reader.recordCount, 'Unexpected number of records').toBe(expectedGeomCount);
   return reader;

@@ -11,15 +11,23 @@ const toArrayBuffer = (buf: Uint8Array): ArrayBuffer => {
   return ab;
 };
 
-export const openTestFile = async (name: string): Promise<FileMock> => {
+const readBuffer = async (name: string): Promise<ArrayBuffer> => {
   const filePath = `./testdata/${name}`;
   try {
     const buf = await fs.promises.readFile(filePath);
-    return new FileMock(toArrayBuffer(buf));
+    return toArrayBuffer(buf);
   } catch (err) {
     console.error(`Failed to open ${filePath}`);
     throw err;
   }
+};
+
+export const openTestFile = async (name: string): Promise<FileMock> => {
+  return new FileMock(await readBuffer(name));
+};
+
+export const openTestBuffer = async (name: string): Promise<ArrayBuffer> => {
+  return readBuffer(name);
 };
 
 export const assertThrows = async (func: () => Promise<void>, expectedMessage: string) => {
