@@ -1,6 +1,6 @@
 import { Coordinate } from './coordinate';
 import { ShapeType, ShpGeometryBase } from './geometry';
-import { GeoJsonGeom, GeoJsonCoordinateSequence, GeoJsonMultiPolygon, GeoJsonPolygon } from './geoJson';
+import { Geometry, Position, MultiPolygon, Polygon } from './geoJson';
 import { LineString } from './polyLine';
 
 export class LinerarRing extends LineString {
@@ -42,7 +42,7 @@ export class LinerarRing extends LineString {
     return false;
   }
 
-  public toGeoJson(): GeoJsonCoordinateSequence {
+  public toGeoJson(): Position[] {
     const json = this.coords.map((coord) => coord.toGeoJson());
     json.reverse();
     return json;
@@ -58,8 +58,8 @@ export class ShpPolygonPart {
   }
 
   // Converts the part to a GeoJSON ring collection
-  public toJson(): Array<GeoJsonCoordinateSequence> {
-    const res: Array<GeoJsonCoordinateSequence> = [];
+  public toJson(): Position[][] {
+    const res: Position[][] = [];
     // GeoJSON follows the "right hand rule", where exterior rings are
     // counter-clockwise, and interiors clockwise. Therefore we reverse() them.
     res.push(this.exteriorRing.toGeoJson());
@@ -68,11 +68,11 @@ export class ShpPolygonPart {
   }
 
   // Converts the part to a standalone GeoJSON polygon
-  public toGeoJson(): GeoJsonGeom {
-    const rings: Array<GeoJsonCoordinateSequence> = [];
+  public toGeoJson(): Geometry {
+    const rings: Position[][] = [];
     rings.push(this.exteriorRing.toGeoJson());
     rings.push(...this.interiorRings.map((r) => r.toGeoJson()));
-    return <GeoJsonPolygon>{
+    return <Polygon>{
       type: 'Polygon',
       coordinates: rings
     };
@@ -84,14 +84,14 @@ export type ShpPolygonType = ShapeType.Polygon | ShapeType.PolygonZ | ShapeType.
 export class ShpPolygon extends ShpGeometryBase {
   readonly parts: Array<ShpPolygonPart> = [];
 
-  public toGeoJson(): GeoJsonGeom {
+  public toGeoJson(): Geometry {
     if (this.parts.length > 1) {
-      return <GeoJsonMultiPolygon>{
+      return <MultiPolygon>{
         type: 'MultiPolygon',
         coordinates: this.parts.map((part) => part.toJson())
       };
     }
-    return <GeoJsonPolygon>{
+    return <Polygon>{
       type: 'Polygon',
       coordinates: this.parts[0].toJson()
     };

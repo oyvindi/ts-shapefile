@@ -12,3 +12,8 @@ Instructions for AI agents working in this repository.
 - When making changes to this library, update existing tests to reflect the changes.
 - Add new tests when relevant to cover new functionality or changed behavior.
 - Run `npm test` to verify before considering work complete.
+
+## Documentation
+
+- Whenever the public API changes, update `README.md` to reflect it.
+- Use a clean, human-readable language. Add examples if missing.

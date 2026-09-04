@@ -1,4 +1,4 @@
-import { GeoJsonCoordXY, GeoJsonCoordXYZ } from './geoJson';
+import { Position } from './geoJson';
 
 export enum CoordType {
   NULL = 0,
@@ -16,7 +16,7 @@ export interface Coordinate {
   readonly hasZ: boolean;
   readonly hasM: boolean;
   toJson(): number[];
-  toGeoJson(): GeoJsonCoordXY | GeoJsonCoordXYZ;
+  toGeoJson(): Position;
 }
 
 abstract class CoordinateBase implements Coordinate {
@@ -37,11 +37,11 @@ abstract class CoordinateBase implements Coordinate {
     return [this.x, this.y];
   }
 
-  public toGeoJson(): GeoJsonCoordXY | GeoJsonCoordXYZ {
+  public toGeoJson(): Position {
     if (this.hasZ) {
-      return [this.x, this.y, this.z] as GeoJsonCoordXYZ;
+      return [this.x, this.y, this.z];
     }
-    return [this.x, this.y] as GeoJsonCoordXY;
+    return [this.x, this.y];
   }
 }
 

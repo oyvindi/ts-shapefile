@@ -25,6 +25,7 @@
     "@eslint/js": "10.0.1",
     "@placemarkio/check-geojson": "0.1.14",
     "@rolldown/plugin-node-polyfills": "1.0.3",
+    "@types/geojson": "7946.0.16",
     "@types/node": "26.4.1",
     "buffer": "6.0.3",
     "eslint": "10.9.1",

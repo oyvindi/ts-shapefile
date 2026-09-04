@@ -1,8 +1,8 @@
 import { ShpGeometryBase } from './geometry';
-import { GeoJsonGeom } from './geoJson';
+import { Geometry } from './geoJson';
 
 export class ShpNullGeom extends ShpGeometryBase {
-  public toGeoJson(): GeoJsonGeom {
+  public toGeoJson(): Geometry {
     throw new Error('Not implemented');
   }
 }

@@ -1,5 +1,5 @@
 import { CoordType } from './coordinate';
-import { GeoJsonGeom } from './geoJson';
+import { Geometry } from './geoJson';
 
 export enum ShapeType {
   Null = 0,
@@ -51,7 +51,7 @@ export class GeomUtil {
 
 export interface ShpGeometry {
   type: ShapeType;
-  toGeoJson(): GeoJsonGeom;
+  toGeoJson(): Geometry;
   readonly hasZ: boolean;
   readonly hasM: boolean;
 }
@@ -70,5 +70,5 @@ export abstract class ShpGeometryBase implements ShpGeometry {
     this.hasM = pointType === CoordType.XYZM || pointType === CoordType.XYM;
   }
 
-  public abstract toGeoJson(): GeoJsonGeom;
+  public abstract toGeoJson(): Geometry;
 }
