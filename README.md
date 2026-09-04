@@ -43,7 +43,7 @@ for (var i = 0; i < reader.recordCount; i++) {
 
 ### Reading attributes (.dbf, optionally .cpg) only
 
-Note that if a CPG file is not specifed, the reader will attempt to resolve codepages from the DBF header. If not found, it will default to CP-1252
+Note that if a CPG file is not specifed, the reader will attempt to resolve codepages from the DBF header. If not found, it will fall back to CP-1252
 
 ```typescript
 const reader = await DbfReader.fromFile(dbfFile, cpgFile);
