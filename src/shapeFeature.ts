@@ -28,6 +28,10 @@ export class ShapeFeature {
       type: 'Feature'
     };
   }
+
+  public toWkt(): string | null {
+    return this.geom ? this.geom.toWkt() : null;
+  }
 }
 
 export class ShapeFeatureCollection {
@@ -55,5 +59,9 @@ export class ShapeFeatureCollection {
       type: 'FeatureCollection',
       features: features
     };
+  }
+
+  public toWkt(): Array<string | null> {
+    return this._features.map((feature) => feature.toWkt());
   }
 }

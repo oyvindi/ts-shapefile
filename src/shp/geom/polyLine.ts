@@ -1,6 +1,7 @@
 import { Coordinate } from './coordinate';
 import { ShpGeometryBase, ShapeType } from './geometry';
 import { Geometry, Position, LineString as GeoJsonLineString, MultiLineString } from './geoJson';
+import { coordsToWkt, wktDimSuffix } from './wkt';
 
 export class LineString {
   readonly coords: Array<Coordinate> = [];
@@ -11,6 +12,10 @@ export class LineString {
 
   public toGeoJson(): Position[] {
     return this.coords.map((coord) => coord.toGeoJson());
+  }
+
+  public toWkt(): string {
+    return coordsToWkt(this.coords);
   }
 }
 
@@ -41,5 +46,17 @@ export class ShpPolyLine extends ShpGeometryBase {
       type: 'MultiLineString',
       coordinates: this.parts.map((p) => p.toGeoJson())
     };
+  }
+
+  public toWkt(): string {
+    const suffix = wktDimSuffix(this.hasZ, this.hasM);
+    if (this.parts.length === 0) {
+      return `LINESTRING${suffix} EMPTY`;
+    }
+    if (this.parts.length < 2) {
+      return `LINESTRING${suffix} ${this.parts[0].toWkt()}`;
+    }
+    const parts = this.parts.map((p) => p.toWkt()).join(', ');
+    return `MULTILINESTRING${suffix} (${parts})`;
   }
 }

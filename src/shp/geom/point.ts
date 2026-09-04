@@ -1,6 +1,7 @@
 import { Coordinate } from './coordinate';
 import { ShapeType, ShpGeometryBase } from './geometry';
 import { Geometry, Point } from './geoJson';
+import { coordToWkt, wktDimSuffix } from './wkt';
 
 export type ShpPointType = ShapeType.Point | ShapeType.PointZ | ShapeType.PointM;
 
@@ -33,5 +34,9 @@ export class ShpPoint extends ShpGeometryBase {
       type: 'Point',
       coordinates: this._point.toGeoJson()
     };
+  }
+
+  public toWkt(): string {
+    return `POINT${wktDimSuffix(this.hasZ, this.hasM)} (${coordToWkt(this._point)})`;
   }
 }

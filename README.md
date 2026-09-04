@@ -3,7 +3,7 @@
 A TypeScript implementation of ESRI Shapefiles, in browsers or NodeJS.
 
 - Supports legacy and current (.CPG-file) DBF codepages, with all known encodings
-- Supports GeoJSON serialization
+- Supports GeoJSON and WKT (Well Known Text) serialization
 
 ## Table of Contents
 
@@ -12,6 +12,7 @@ A TypeScript implementation of ESRI Shapefiles, in browsers or NodeJS.
 - [Reading features (geometry + attributes)](#reading-features-geometry--attributes)
 - [Reading geometries only (.shp and .shx)](#reading-geometries-only-shp-and-shx)
 - [Reading attributes (.dbf, optionally .cpg) only](#reading-attributes-dbf-optionally-cpg-only)
+- [Serialization formats (GeoJSON, WKT)](#serialization-formats-geojson-wkt)
 - [Reading from a .zip archive](#reading-from-a-zip-archive)
   - [Browser](#browser)
   - [Node.js](#nodejs)
@@ -28,7 +29,7 @@ const reader = await ShapefileFs.fromPath('path/to/myfile.shp');
 console.log(`Feature count: ${reader.featureCount}`);
 const collection = reader.readFeatureCollection();
 collection.features.forEach((feature) => {
-  console.log(JSON.stringify(feature.toGeoJson()));
+  console.log(feature.toWkt());
 });
 ```
 
@@ -65,7 +66,7 @@ reader.fields.forEach((field) => console.log(`  field: ${field.name}(${field.typ
 // Read record by record
 for (var i = 0; i < reader.featureCount; i++) {
     const feature = reader.readFeature(i);
-    console.log(JSON.stringify(feature.toGeoJson()));
+    console.log(feature.toWkt());
 }
 
 // Or read the entire collection at once
@@ -83,7 +84,7 @@ console.log(`Has Z: ${reader.hasZ}`);
 console.log(`Has Z: ${reader.hasM}`);
 for (var i = 0; i < reader.recordCount; i++) {
   var geom = reader.readGeom(i);
-  console.log(JSON.stringify(geom.toGeoJson()));
+  console.log(geom.toWkt());
 }
 ```
 
@@ -101,6 +102,56 @@ for (var i = 0; i < reader.recordCount; i++) {
     console.log(`${reader.fields[f].name}(${reader.fields[f].typeName}) = ${rec[f]}`);
   }
 }
+```
+
+### Serialization formats (GeoJSON, WKT)
+
+Geometries and features can be serialized to two formats: GeoJSON and WKT (Well Known Text). Both are available on every geometry and feature object.
+
+#### GeoJSON
+
+`toGeoJson()` returns a GeoJSON geometry object. On `ShapeFeature` it returns a full GeoJSON `Feature` with properties; on `ShapeFeatureCollection` it returns a `FeatureCollection`.
+
+```typescript
+const reader = await ShapeReader.fromFile(shpFile, shxFile);
+for (let i = 0; i < reader.recordCount; i++) {
+  const geom = reader.readGeom(i);
+  console.log(JSON.stringify(geom.toGeoJson()));
+  // {"type":"Point","coordinates":[-155,-154]}
+  // {"type":"LineString","coordinates":[[-174.45,-156.65],...]}
+  // {"type":"MultiPolygon","coordinates":[[[[...]]]]}
+}
+
+// Features include attributes as properties
+const featureReader = await ShapeFeatureReader.fromFiles(shp, shx, dbf, cpg);
+const collection = featureReader.readFeatureCollection();
+console.log(JSON.stringify(collection.toGeoJson()));
+// {"type":"FeatureCollection","features":[...]}
+```
+
+#### WKT (Well Known Text)
+
+`toWkt()` returns a WKT string. The output follows the ISO SQL/MM convention, appending a `Z`, `M`, or `ZM` suffix to the geometry type when the shapefile carries those dimensions.
+
+```typescript
+const reader = await ShapeReader.fromFile(shpFile, shxFile);
+for (let i = 0; i < reader.recordCount; i++) {
+  const geom = reader.readGeom(i);
+  console.log(geom.toWkt());
+  // "POINT (-155 -154)"
+  // "POINT ZM (-153 -178 1 2)"
+  // "LINESTRING (-174.45 -156.65, -156.03 -160.44, -146.82 -153.40)"
+  // "MULTILINESTRING ((...), (...))"
+  // "POLYGON ((100 60, 100 -40, -100 -40, -100 60, 100 60), (...))"
+  // "MULTIPOLYGON (((...), (...)), ((...)))"
+}
+```
+
+`ShapeFeature.toWkt()` returns the WKT string for the feature's geometry (or `null` for null geometries). `ShapeFeatureCollection.toWkt()` returns an array of WKT strings, one per feature.
+
+```typescript
+const collection = reader.readFeatureCollection();
+const wktStrings = collection.toWkt(); // Array<string | null>
 ```
 
 ### Reading from a .zip archive
@@ -139,7 +190,7 @@ const reader = await ShapeFeatureReader.fromArrayBuffers(
 
 const collection = reader.readFeatureCollection();
 collection.features.forEach((feature) => {
-  console.log(JSON.stringify(feature.toGeoJson()));
+  console.log(feature.toWkt());
 });
 ```
 

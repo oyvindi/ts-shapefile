@@ -2,6 +2,7 @@ import { Coordinate } from './coordinate';
 import { ShapeType, ShpGeometryBase } from './geometry';
 import { Geometry, Position, MultiPolygon, Polygon } from './geoJson';
 import { LineString } from './polyLine';
+import { coordsToWkt, wktDimSuffix } from './wkt';
 
 export class LinerarRing extends LineString {
   public area(): number {
@@ -47,6 +48,11 @@ export class LinerarRing extends LineString {
     json.reverse();
     return json;
   }
+
+  public toWkt(): string {
+    const reversed = [...this.coords].reverse();
+    return coordsToWkt(reversed);
+  }
 }
 
 export class ShpPolygonPart {
@@ -79,6 +85,12 @@ export class ShpPolygonPart {
       coordinates: rings
     };
   }
+
+  // Converts the part to a WKT ring group, e.g. "((exterior), (interior1), ...)"
+  public toWkt(): string {
+    const rings = [this.exteriorRing.toWkt(), ...this.interiorRings.map((r) => r.toWkt())];
+    return `(${rings.join(', ')})`;
+  }
 }
 
 export type ShpPolygonType = ShapeType.Polygon | ShapeType.PolygonZ | ShapeType.PolygonM;
@@ -103,5 +115,17 @@ export class ShpPolygon extends ShpGeometryBase {
       type: 'Polygon',
       coordinates: this.parts[0].toJson()
     };
+  }
+
+  public toWkt(): string {
+    const suffix = wktDimSuffix(this.hasZ, this.hasM);
+    if (this.parts.length === 0) {
+      return `POLYGON${suffix} EMPTY`;
+    }
+    if (this.parts.length > 1) {
+      const parts = this.parts.map((p) => p.toWkt()).join(', ');
+      return `MULTIPOLYGON${suffix} (${parts})`;
+    }
+    return `POLYGON${suffix} ${this.parts[0].toWkt()}`;
   }
 }

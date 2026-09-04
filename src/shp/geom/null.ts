@@ -5,4 +5,8 @@ export class ShpNullGeom extends ShpGeometryBase {
   public toGeoJson(): Geometry | null {
     return null;
   }
+
+  public toWkt(): string | null {
+    return null;
+  }
 }

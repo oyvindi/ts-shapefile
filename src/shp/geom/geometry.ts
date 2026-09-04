@@ -56,6 +56,7 @@ export class GeomUtil {
 export interface ShpGeometry {
   type: ShapeType;
   toGeoJson(): Geometry | null;
+  toWkt(): string | null;
   readonly hasZ: boolean;
   readonly hasM: boolean;
 }
@@ -75,4 +76,6 @@ export abstract class ShpGeometryBase implements ShpGeometry {
   }
 
   public abstract toGeoJson(): Geometry | null;
+
+  public abstract toWkt(): string | null;
 }
