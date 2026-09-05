@@ -1,5 +1,4 @@
 import { defineConfig } from 'tsdown';
-import nodePolyfills from '@rolldown/plugin-node-polyfills';
 
 export default defineConfig({
   entry: ['index.ts', 'node.ts'],
@@ -11,11 +10,9 @@ export default defineConfig({
   // Use fixedExtension so CJS gets .cjs, ESM gets .mjs, UMD gets .umd.js
   // — avoids filename collisions between formats.
   fixedExtension: true,
-  // iconv-lite is a CJS package without ESM named exports.
-  // Bundle it into ESM and UMD so consumers don't hit CJS-interop issues.
-  // For CJS it stays external (Node's require() handles it natively).
+  // Don't bundle dependencies by default; everything the browser entry needs is
+  // either first-party source or cross-platform Web APIs (TextDecoder).
   deps: {
-    alwaysBundle: ['iconv-lite'],
     onlyBundle: false
   },
   // UMD is browser-only and does not support code-splitting, so only build
@@ -35,18 +32,15 @@ export default defineConfig({
     }
     return outputOptions;
   },
-  // For CJS, keep iconv-lite external. For UMD, polyfill Node builtins (Buffer).
   // node:fs/promises and node:path are Node-only builtins used by the ./node
-  // entry; keep them external for ESM and CJS.
+  // entry; keep them external for ESM and CJS. The browser (index.ts) entry
+  // uses only cross-platform Web APIs (TextDecoder, ArrayBuffer, DataView),
+  // so UMD needs no Node builtin polyfills.
   inputOptions(options, format) {
     const opts = { ...options };
-    const nodeBuiltins = ['node:fs/promises', 'node:path'];
-    if (format === 'cjs') {
-      opts.external = ['iconv-lite', ...nodeBuiltins];
-    } else if (format === 'esm') {
+    if (format === 'cjs' || format === 'esm') {
+      const nodeBuiltins = ['node:fs/promises', 'node:path'];
       opts.external = [...(opts.external ?? []), ...nodeBuiltins];
-    } else if (format === 'umd') {
-      opts.plugins = [...(opts.plugins ?? []), nodePolyfills()];
     }
     return opts;
   }

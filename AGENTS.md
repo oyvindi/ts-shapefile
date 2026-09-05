@@ -16,10 +16,14 @@ Preserve this when making changes.
   an `fromArrayBuffer` / `fromArrayBuffers` counterpart that takes raw
   `ArrayBuffer`s, so Node consumers can read files themselves and pass bytes in.
 - The build emits three formats via `tsdown.config.ts`: CJS (`.cjs`),
-  ESM (`.mjs`), and UMD (`.umd.js`). UMD polyfills Node builtins (`Buffer`)
-  for browser use. Do not drop a format without reason.
-- `iconv-lite` is bundled into ESM and UMD (it has no ESM named exports);
-  kept external for CJS where Node `require()` handles it natively.
+  ESM (`.mjs`), and UMD (`.umd.js`). Do not drop a format without reason.
+- DBF text decoding uses the Web-standard `TextDecoder` (available in both
+  Node and browsers) for encodings the WHATWG Encoding standard covers
+  (windows-125x, iso-8859-x, shift_jis, gbk, big5, euc-kr, ibm866,
+  windows-874, macintosh, x-mac-cyrillic). Code pages `TextDecoder` does not
+  support (DOS OEM, Mac Central European/Greek, Kamenicky, Mazovia) are
+  decoded with inline single-byte tables in `src/dbf/sbcsTables.ts`. There is
+  no `iconv-lite` dependency.
 - `package.json` exposes all three formats through the `exports` field
   (`browser` -> UMD, `import` -> ESM, `require` -> CJS), with per-condition
   `types`. Keep these in sync with the build output.
