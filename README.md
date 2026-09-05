@@ -2,7 +2,8 @@
 
 A TypeScript implementation of ESRI Shapefiles, in browsers or NodeJS.
 
-- Supports legacy and current (.CPG-file) DBF codepages, with all known encodings
+- Dependency-free and lightweight — the bundle is approximately 23 KB (minified, ~8 KB gzipped) with no runtime dependencies
+- Supports legacy and current (.CPG-file) DBF codepages, including DOS OEM, Windows (ANSI), ISO-8859, Mac, and CJK (Shift-JIS, GBK, Big5, EUC-KR) encodings
 - Supports GeoJSON and WKT (Well Known Text) serialization
 
 ## Table of Contents

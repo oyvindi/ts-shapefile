@@ -41,5 +41,10 @@ Preserve this when making changes.
 
 ## Documentation
 
+- `README.md` is end-user documentation. Write for the user, not the
+  maintainer. State what the library does, its public API, and observable
+  properties (bundle size, supported formats, dependencies). Do not describe
+  implementation internals (which decoder is used, how tables are sourced,
+  internal class structure) — those belong in code comments or AGENTS.md.
 - Whenever the public API changes, update `README.md` to reflect it.
 - Use a clean, human-readable language. Add examples if missing.
