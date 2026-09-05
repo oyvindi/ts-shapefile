@@ -6,6 +6,7 @@ export default defineConfig({
   outDir: 'dist',
   clean: true,
   dts: true,
+  minify: true,
   sourcemap: true,
   // Use fixedExtension so CJS gets .cjs, ESM gets .mjs, UMD gets .umd.js
   // — avoids filename collisions between formats.
