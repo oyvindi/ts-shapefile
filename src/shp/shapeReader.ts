@@ -160,7 +160,9 @@ export class ShapeReader {
       this._shpStream.readDouble(true); // skip zMax
       zValues = this._shpStream.readDoubleArray(partsInfo.numPoints, true);
     }
-    if (this.hasM) {
+    // M values are optional for Z-type shapes: only read them if the
+    // record has enough bytes left for mMin + mMax + numPoints doubles.
+    if (this.hasM && this._shpStream.remaining >= 16 + partsInfo.numPoints * 8) {
       this._shpStream.readDouble(true); // skip mMin
       this._shpStream.readDouble(true); // skip mMax
       mValues = this._shpStream.readDoubleArray(partsInfo.numPoints, true);
@@ -240,15 +242,20 @@ export class ShapeReader {
     const x = this._shpStream.readDouble(true);
     const y = this._shpStream.readDouble(true);
     let coord: Coordinate | undefined;
-    if (this.hasM) {
-      const z = this.hasZ ? this._shpStream.readDouble(true) : undefined;
-      let m = this._shpStream.readDouble(true);
-      m = this._checkMeasureNaN(m);
-      if (z) {
+    if (this.hasZ) {
+      const z = this._shpStream.readDouble(true);
+      // M value is optional for Z-type shapes; only read if present.
+      if (this.hasM && this._shpStream.remaining >= 8) {
+        let m = this._shpStream.readDouble(true);
+        m = this._checkMeasureNaN(m);
         coord = new CoordXYZM(x, y, z, m);
       } else {
-        coord = new CoordXYM(x, y, m);
+        coord = new CoordXYZM(x, y, z, NaN);
       }
+    } else if (this.hasM && this._shpStream.remaining >= 8) {
+      let m = this._shpStream.readDouble(true);
+      m = this._checkMeasureNaN(m);
+      coord = new CoordXYM(x, y, m);
     } else {
       coord = new CoordXY(x, y);
     }
@@ -271,7 +278,9 @@ export class ShapeReader {
       this._shpStream.readDouble(true); // skip zMax
       zValues = this._shpStream.readDoubleArray(numPoints, true);
     }
-    if (this.hasM) {
+    // M values are optional for Z-type shapes: only read them if the
+    // record has enough bytes left for mMin + mMax + numPoints doubles.
+    if (this.hasM && this._shpStream.remaining >= 16 + numPoints * 8) {
       this._shpStream.readDouble(true); // skip mMin
       this._shpStream.readDouble(true); // skip mMax
       mValues = this._shpStream.readDoubleArray(numPoints, true);

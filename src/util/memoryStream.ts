@@ -7,6 +7,11 @@ export class MemoryStream {
     return this._offset;
   }
 
+  /** Number of bytes remaining from the current position to the end of the buffer. */
+  public get remaining(): number {
+    return this._size - this._offset;
+  }
+
   constructor(buffer: ArrayBuffer) {
     this._size = buffer.byteLength;
     this._dataView = new DataView(buffer);
