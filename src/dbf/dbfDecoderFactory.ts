@@ -158,7 +158,7 @@ export class DbfDecoderFactory {
     return createDecoder('cp1252');
   }
 
-  public static fromDbfLangCode(code: number): DbfDecoder | undefined {
+  public static fromDbfLangCode(code: number): DbfDecoder {
     if (code === 0) {
       // Default = 1252
       return createDecoder('cp1252');

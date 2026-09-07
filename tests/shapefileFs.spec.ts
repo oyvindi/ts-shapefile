@@ -17,7 +17,7 @@ describe('ShapefileFs', () => {
       expect(feature.geom).not.toBeNull();
       expect(feature.attrs).not.toBeNull();
 
-      expect(feature.geom.type).toBe(ShapeType.PolyLine);
+      expect(feature.geom!.type).toBe(ShapeType.PolyLine);
       const polyLine = feature.geom as ShpPolyLine;
       expect(polyLine.parts.length).toBe(1);
       assertCoordsXY(polyLine.parts[0].coords, [
@@ -28,9 +28,9 @@ describe('ShapefileFs', () => {
         { x: -117.3470458984375, y: -40.57794189453125 }
       ]);
 
-      expect(feature.attrs.length).toBe(2);
-      expect(feature.attrs[0]).toBe(0);
-      expect(feature.attrs[1]).toBe('feature 1');
+      expect(feature.attrs!.length).toBe(2);
+      expect(feature.attrs![0]).toBe(0);
+      expect(feature.attrs![1]).toBe('feature 1');
     });
   });
 
@@ -43,10 +43,10 @@ describe('ShapefileFs', () => {
       collection.features.forEach((feature) => {
         expect(feature.geom).not.toBeNull();
         expect(feature.attrs).not.toBeNull();
-        expect(feature.attrs.length).toBe(2);
-        expect(typeof feature.attrs[0]).toBe('number');
-        expect(typeof feature.attrs[1]).toBe('string');
-        expect(feature.geom.type).toBe(ShapeType.PolyLine);
+        expect(feature.attrs!.length).toBe(2);
+        expect(typeof feature.attrs![0]).toBe('number');
+        expect(typeof feature.attrs![1]).toBe('string');
+        expect(feature.geom!.type).toBe(ShapeType.PolyLine);
       });
     });
   });

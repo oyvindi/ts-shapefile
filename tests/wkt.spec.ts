@@ -68,7 +68,8 @@ const parseWkt = (wkt: string): ParsedWkt => {
 
 // Type-narrowing helpers for extracting structure from the parsed tree.
 const asCoords = (node: WktNode): number[][] => node as number[][];
-const asGroups = (node: WktNode): number[][][][] => node as number[][][][];
+const asGroups = (node: WktNode): number[][][] => node as number[][][];
+const asPolygons = (node: WktNode): number[][][][] => node as unknown as number[][][][];
 
 // Asserts that a coordinate tuple matches expected values within tolerance.
 const assertCoord = (actual: number[], expected: number[], dim: number) => {
@@ -221,7 +222,7 @@ describe('WKT serializing', () => {
       expect(parsed.type).toBe('MULTIPOLYGON');
       expect(parsed.dim).toBe('');
       // MULTIPOLYGON: (((ext), (int)), ((ext)), ((ext), (int)))
-      const polygons = asGroups(parsed.root!) as number[][][][][];
+      const polygons = asPolygons(parsed.root!);
       expect(polygons.length).toBe(3); // 3 polygons
       // First polygon: 1 exterior + 2 interiors
       expect(polygons[0].length).toBe(3);
@@ -246,7 +247,7 @@ describe('WKT serializing', () => {
       const parsed = parseWkt(wkt);
       expect(parsed.type).toBe('MULTIPOLYGON');
       expect(parsed.dim).toBe('ZM');
-      const polygons = asGroups(parsed.root!) as number[][][][][];
+      const polygons = asPolygons(parsed.root!);
       expect(polygons.length).toBe(3); // 3 polygons
       // First polygon: 1 exterior + 3 interiors
       expect(polygons[0].length).toBe(4);

@@ -12,7 +12,6 @@ const buildPointMWithSentinelM = (): { shp: ArrayBuffer; shx: ArrayBuffer } => {
   const shpSize = 100 + 8 + 28;
   const shp = new ArrayBuffer(shpSize);
   const shpView = new DataView(shp);
-  const shpBytes = new Uint8Array(shp);
 
   // SHP file header
   shpView.setInt32(0, 9994, false); // file code (big-endian)

@@ -107,7 +107,7 @@ describe('DbfReader', () => {
       expect(record[0]).toBeCloseTo(123.123, 7);
       expect(record[1]).toBeCloseTo(1.123456789, 7);
       expect(record[2]).toBe('Some text');
-      expect(record[3].getTime()).toBe(new Date(2020, 11, 15).getTime());
+      expect((record[3] as Date).getTime()).toBe(new Date(2020, 11, 15).getTime());
       expect(record[4]).toBe(55555555);
       expect(record[5]).toBe(44444);
 
@@ -187,7 +187,7 @@ describe('DbfReader', () => {
       expect(record[0]).toBeCloseTo(123.123, 7);
       expect(record[1]).toBeCloseTo(1.123456789, 7);
       expect(record[2]).toBe('Some text');
-      expect(record[3].getTime()).toBe(new Date(2020, 11, 15).getTime());
+      expect((record[3] as Date).getTime()).toBe(new Date(2020, 11, 15).getTime());
       expect(record[4]).toBe(55555555);
       expect(record[5]).toBe(44444);
 
@@ -291,10 +291,6 @@ describe('DbfReader', () => {
 
   describe('DBF deleted record', () => {
     it('should return null for all fields when deleted flag is 0x2a', async () => {
-      const fields: SynthField[] = [
-        { name: 'NAME', type: 'C', len: 10 },
-        { name: 'VAL', type: 'N', len: 5 }
-      ];
       const headerSize = 32 + 32 * 2 + 1;
       const recordSize = 1 + 10 + 5;
       const buf = new ArrayBuffer(headerSize + recordSize * 2 + 1);

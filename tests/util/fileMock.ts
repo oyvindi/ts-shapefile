@@ -3,19 +3,24 @@ export class FileMock implements File {
 
   constructor(buffer: ArrayBuffer) {
     this._buf = buffer;
+    this.size = buffer.byteLength;
   }
-  lastModified: number;
-  name: string;
-  size: number;
-  type: string;
+  readonly lastModified = 0;
+  readonly name = '';
+  readonly size: number;
+  readonly type = '';
+  readonly webkitRelativePath = '';
 
   slice(_start?: number, _end?: number, _contentType?: string): Blob {
     throw new Error('Method not implemented.');
   }
-  stream(): ReadableStream<unknown> {
+  stream(): ReadableStream<Uint8Array<ArrayBuffer>> {
     throw new Error('Method not implemented.');
   }
   text(): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+  bytes(): Promise<Uint8Array<ArrayBuffer>> {
     throw new Error('Method not implemented.');
   }
 
