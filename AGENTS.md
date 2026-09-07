@@ -28,6 +28,35 @@ Preserve this when making changes.
   (`browser` -> UMD, `import` -> ESM, `require` -> CJS), with per-condition
   `types`. Keep these in sync with the build output.
 
+## Shapefile / dBASE standard compliance
+
+When editing SHP or DBF parsing code, follow the ESRI Shapefile and dBASE
+file format specifications. Common pitfalls:
+
+- **Endianness.** The SHP file header stores the file length and shape type
+  in big-endian at offsets 24 and 32 respectively. Record headers (record
+  number, content length) are big-endian. All other record fields (shape
+  type, coordinates, measures) are little-endian. SHX index entries are
+  big-endian. DBF header fields use little-endian.
+- **File length units.** SHP and SHX file lengths are in 16-bit words, not
+  bytes. Multiply by 2 to get byte offsets. SHX record offsets are also in
+  16-bit words.
+- **M-value NaN sentinel.** Per the Shapefile spec, a measure value of
+  exactly `-1e38` represents NaN. Use `<=` (not `<`) when comparing against
+  the threshold so the exact sentinel is treated as NaN.
+- **DBF month encoding.** dBASE stores months as 1-12 (January = 1).
+  JavaScript's `Date` constructor expects 0-11 (January = 0). Always
+  subtract 1 when constructing a `Date` from a dBASE month. This applies
+  to both the header `lastUpdated` date and `D`-type field values.
+- **DBF character fields.** Character fields may be null-terminated (0x00)
+  or space-padded (0x20). When a null terminator is encountered, decode only
+  the bytes up to (not including) the null. `String.trim()` does not remove
+  `\u0000` characters.
+- **Polygon ring orientation.** Per the Shapefile spec, exterior rings are
+  clockwise and interior rings are counter-clockwise. GeoJSON (RFC 7946)
+  uses the right-hand rule (exterior counter-clockwise). Ring reversal is
+  handled in the geometry classes — do not double-reverse.
+
 ## Dependencies
 
 - Pin exact versions in `package.json`. Do not prefix versions with `^` or `~`.

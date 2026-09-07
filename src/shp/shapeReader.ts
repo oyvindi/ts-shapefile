@@ -140,7 +140,7 @@ export class ShapeReader {
   }
 
   private _checkMeasureNaN(m: number): number {
-    if (m < mNaN) {
+    if (m <= mNaN) {
       return NaN;
     }
     return m;

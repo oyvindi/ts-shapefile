@@ -45,6 +45,9 @@ describe('DbfReader', () => {
       expect(record[4]).toBe(55555555);
       expect(record[5]).toBe(44444);
 
+      // DBF header stores year=120 (2020), month=12 (December, 1-based), day=15
+      expect(reader.lastUpdated.getTime()).toBe(new Date(2020, 11, 15).getTime());
+
       // This DBF is UTF-8 encoded, test with Norwegian and German characters
       record = reader.readRecord(1);
       expect(record[2]).toBe('Norwegian ÆØÅ');
@@ -122,6 +125,9 @@ describe('DbfReader', () => {
       expect(record[4]).toBe(55555555);
       expect(record[5]).toBe(44444);
 
+      // DBF header stores year=120 (2020), month=12 (December, 1-based), day=15
+      expect(reader.lastUpdated.getTime()).toBe(new Date(2020, 11, 15).getTime());
+
       record = reader.readRecord(1);
       expect(record[2]).toBe('Norwegian ÆØÅ');
       record = reader.readRecord(2);
@@ -138,6 +144,53 @@ describe('DbfReader', () => {
       expect(reader.encoding).toBe('cp865');
       const row = reader.readRecord(2);
       expect(row[1]).toBe('æøåÆØÅ');
+    });
+  });
+
+  describe('DBF character field with null terminator', () => {
+    it('should not produce trailing \\u0000 characters', async () => {
+      // Build a minimal DBF in memory with one Character field (len=10)
+      // containing "Hello" followed by null bytes.
+      const headerSize = 32 + 32 + 1; // header + 1 field descriptor + terminator
+      const recordSize = 1 + 10; // deleted flag + field length
+      const buf = new ArrayBuffer(headerSize + recordSize + 1); // +1 for EOF marker
+      const view = new DataView(buf);
+      const bytes = new Uint8Array(buf);
+
+      // Header
+      bytes[0] = 0x03; // dBASE III version
+      bytes[1] = 120; // year - 1900 = 2020
+      bytes[2] = 12; // month (1-based, December)
+      bytes[3] = 15; // day
+      view.setInt32(4, 1, true); // record count = 1
+      view.setInt16(8, headerSize, true); // header size
+      view.setInt16(10, recordSize, true); // record size
+      bytes[29] = 0; // lang code (default = cp1252)
+
+      // Field descriptor: name="NAME", type='C', length=10
+      const nameBytes = [78, 65, 77, 69]; // "NAME"
+      for (let i = 0; i < nameBytes.length; i++) bytes[32 + i] = nameBytes[i];
+      bytes[32 + 11] = 0x43; // 'C' (Character)
+      bytes[32 + 16] = 10; // field length
+      bytes[32 + 17] = 0; // decimal count
+
+      // Field terminator
+      bytes[32 + 32] = 0x0d;
+
+      // Record: deleted flag + "Hello\0\0\0\0\0"
+      const recOff = headerSize;
+      bytes[recOff] = 0x20; // not deleted
+      const hello = [72, 101, 108, 108, 111]; // "Hello"
+      for (let i = 0; i < hello.length; i++) bytes[recOff + 1 + i] = hello[i];
+      // Remaining 5 bytes stay as 0x00 (null terminator)
+
+      // EOF marker
+      bytes[headerSize + recordSize] = 0x1a;
+
+      const reader = await DbfReader.fromArrayBuffer(buf);
+      const record = reader.readRecord(0);
+      expect(record[0]).toBe('Hello');
+      expect((record[0] as string).indexOf('\u0000')).toBe(-1);
     });
   });
 });

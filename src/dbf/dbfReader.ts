@@ -27,6 +27,10 @@ export class DbfReader {
     return this._header.recordCount;
   }
 
+  public get lastUpdated(): Date {
+    return this._header.lastUpdated;
+  }
+
   public get encoding(): string {
     return this._decoder?.encoding ?? '';
   }
@@ -125,7 +129,7 @@ export class DbfReader {
     s.readByte();
     this._recordStartOffset = s.tell;
     return {
-      lastUpdated: new Date(updatedY + 1900, updatedM, updatedD),
+      lastUpdated: new Date(updatedY + 1900, updatedM - 1, updatedD),
       recordCount: recordCount,
       version: version
     };
@@ -172,14 +176,16 @@ export class DbfReader {
 
   private _readCharValue(field: DbfFieldDescr): string {
     const chars: Uint8Array = new Uint8Array(field.fieldLen);
+    let len = 0;
     for (let i = 0; i < field.fieldLen; i++) {
       const charCode = this._stream.readByte();
       if (charCode === 0) {
         break;
       }
       chars[i] = charCode;
+      len++;
     }
-    const value = this._decoder!.decode(chars);
+    const value = this._decoder!.decode(chars.subarray(0, len));
     return value.trim();
   }
 
