@@ -57,6 +57,11 @@ file format specifications. Common pitfalls:
   uses the right-hand rule (exterior counter-clockwise). Ring reversal is
   handled in the geometry classes — do not double-reverse.
 
+For DBF encoding, date, and null-value quirks introduced by Esri beyond the
+base dBASE spec (the `.cpg` sidecar file, UTF-8 default, multi-byte field
+widths, lack of timestamps, pseudo-null handling), see
+`spec/esri_shapefile_dbf_quirks.md`.
+
 ## Dependencies
 
 - This library has zero runtime dependencies. Keep it that way.
