@@ -20,12 +20,12 @@ Preserve this when making changes.
 - DBF text decoding uses the Web-standard `TextDecoder` (available in both
   Node and browsers) for encodings the WHATWG Encoding standard covers
   (windows-125x, iso-8859-x, shift_jis, gbk, big5, euc-kr, ibm866,
-  windows-874, macintosh, x-mac-cyrillic). Code pages `TextDecoder` does not
-  support (DOS OEM, Mac Central European/Greek, Kamenicky, Mazovia) are
-  decoded with inline single-byte tables in `src/dbf/sbcsTables.ts`. There is
-  no `iconv-lite` dependency.
+  windows-874, macintosh). Code pages `TextDecoder` does not support
+  (DOS OEM, Mac Central European/Greek, x-mac-cyrillic, Kamenicky, Mazovia)
+  are decoded with inline single-byte tables in `src/dbf/sbcsTables.ts`.
+  There is no `iconv-lite` dependency.
 - `package.json` exposes all three formats through the `exports` field
-  (`browser` -> UMD, `import` -> ESM, `require` -> CJS), with per-condition
+  (`browser` -> UMD, `import` -> ESM, `require` -> CJS), with per-export
   `types`. Keep these in sync with the build output.
 
 ## Shapefile / dBASE standard compliance
@@ -33,11 +33,11 @@ Preserve this when making changes.
 When editing SHP or DBF parsing code, follow the ESRI Shapefile and dBASE
 file format specifications. Common pitfalls:
 
-- **Endianness.** The SHP file header stores the file length and shape type
-  in big-endian at offsets 24 and 32 respectively. Record headers (record
-  number, content length) are big-endian. All other record fields (shape
-  type, coordinates, measures) are little-endian. SHX index entries are
-  big-endian. DBF header fields use little-endian.
+- **Endianness.** The SHP file header stores the file length at offset 24
+  in big-endian, and the shape type at offset 32 in little-endian. Record
+  headers (record number, content length) are big-endian. All other record
+  fields (shape type, coordinates, measures) are little-endian. SHX index
+  entries are big-endian. DBF header fields use little-endian.
 - **File length units.** SHP and SHX file lengths are in 16-bit words, not
   bytes. Multiply by 2 to get byte offsets. SHX record offsets are also in
   16-bit words.
@@ -59,8 +59,8 @@ file format specifications. Common pitfalls:
 
 ## Dependencies
 
-- Pin exact versions in `package.json`. Do not prefix versions with `^` or `~`.
-  This applies to both `dependencies` and `devDependencies`.
+- This library has zero runtime dependencies. Keep it that way.
+- Dev dependencies use caret (`^`) ranges for minor/patch updates.
 
 ## Tests
 
